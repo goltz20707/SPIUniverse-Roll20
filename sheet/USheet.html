@@ -1,0 +1,3301 @@
+<!-- $Id: USheet.html,v 1.28 2026/10/20 14:55:45 goltz Exp $ -->
+
+<!-- The main sheet. -->
+
+<input type="hidden" class="sheet-tabstoggle" name="attr_sheetTab" value="character" />
+<input type="hidden" name="attr_status_movement" value="normal movement" />
+
+<p>
+  <button type="roll" name="shock_check" value="\n!shockCheck @{character_id} @{mp} @{status_shock}">Shock check</button>
+  <button type="roll" name="willpower_check" value="\n!willpowerCheck @{character_id} @{ag} @{mp}">Willpower check</button>
+  <button type="roll" name="init_npc" value="&{template:default} {{name=Initiative (NPC)}} {{roll=[[1d10+@{init_npc} &{tracker}]]}}">Initiative (NPC) (<span name="attr_init_npc"></span>)</button>
+  <button type="roll" name="init_creature" value="&{template:default} {{name=Initiative (creature)}} {{roll=[[1d10+@{init_creature} &{tracker}]]}}">Initiative (creature) (<span name="attr_init_creature"></span>)</button>
+</p>
+
+<div>
+    <button type="action" name="act_sumry" class="sheet-button0">Summary</button>
+    <button type="action" name="act_combat" class="sheet-button1">Combat</button>  
+    <button type="action" name="act_skills" class="sheet-button5">Skills</button>
+    <button type="action" name="act_equipment" class="sheet-button6">Equipment</button>
+    <b style="font-size: x-large;">||</b>
+    <button type="action" name="act_heritage" class="sheet-button2">Heritage</button>    
+    <button type="action" name="act_development" class="sheet-button3">Development</button>
+    <button type="action" name="act_profession" class="sheet-button4">Profession</button>
+    <b style="font-size: x-large;">||</b>
+    <!-- The button below recalculates things when all else fails. -->
+    <button type="action" name="act_recalc">Recalculate</button>
+
+    <hr />
+
+    <p class="status">
+      Character status: <span name="attr_charStatus"></span> (<span name="attr_curmove"></span> hexes/AR, <span name="attr_curmoveday"></span>km/day)<br />
+      Current environment: <span name="attr_curEnvironment"></span><br />
+    </p>
+
+    <table>
+      <tr>
+	<td><input type="checkbox" name="attr_status_prone" value="1" /> prone</td>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" name="attr_status_unconscious" value="1" /> unconscious</td>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" name="attr_status_stunned" value="1" /> stunned</td>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" name="attr_status_shock" value="1" /> in shock</td>
+      </tr>
+      <tr>
+	<td><input type="checkbox" name="attr_status_reloading" value="1" /> reloading</td>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" name="attr_status_immobile" value="1" /> immobile</td>
+      </tr>
+    </table>
+    <input type="hidden" name="attr_status_dead" />
+</div>
+
+
+<hr />
+
+<div class="sheet-sumry">
+  <h2 style="text-align: center;">Summary</h2>
+
+  <table>
+    <tr>
+      <td style="vertical-align: top; text-align: left;">
+	<p><b>Date of Birth:</b> <span name="attr_born" style="width: 10ex"></span>
+	  (age: <span name="attr_age"></span>)<br />
+	  <b>Gender:</b> <span name="attr_gender"></span><br />
+	  <b>Planet of origin:</b> <span name="attr_origin" style="width: 35em"></span><br />
+	  <b>Social standing:</b> <span name="attr_socStandLbl"></span><br />
+	  <br />
+	  <b>Areas of study:</b> <span name="attr_fos"></span><br />
+	  <b>Profession:</b> <span name="attr_profession"></span>
+      (<span name="attr_prof_yrs"></span> years)</p>
+	
+	<p><b>Characteristics:</b></p>
+
+	<!-- Max ST/DX/AY: <span name="attr_max_st_dx_ay"></span><br /> -->
+	<!-- Max DX/AY: <span name="attr_max_dx_ay"></span><br /> -->
+	
+	<table>
+	  <tr>
+	    <th>ST:</th>
+	    <td><span name="attr_st"></span>/<span name="attr_st_max"></span></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <th>IN:</th>
+	    <td><span name="attr_intl"></span></td> <!-- "in" and "int" are reserved words, so "attr_in" and "attr_int" cause problems -->
+	  </tr>
+	  <tr>
+	    <th>EN:</th>
+	    <td><span name="attr_en"></span>/<span name="attr_en_max"></span></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <th>MP:</th>
+	    <td><span name="attr_mp"></span></td>
+	  </tr>
+	  <tr>
+	    <th>DX:</th>
+	    <td><span name="attr_dx"></span>/<span name="attr_dx_max"></span></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <th>LD:</th>
+	    <td><span name="attr_ld"></span></td>
+	  </tr>
+	  <tr>
+	    <th>AY:</th>
+	    <td><span name="attr_ay"></span>/<span name="attr_ay_max"></span></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <th>EM:</th>
+	    <td><span name="attr_em"></span></td>
+	  </tr>
+	  <tr>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <th>AG:</th>
+	    <td><span name="attr_ag"></span></td>
+	  </tr>
+	</table>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td style="vertical-align: top;">
+	<table>
+	  <tr>
+	    <td>
+	      <table>
+		<tr>
+		  <td>&nbsp;</td>
+		  <td>&nbsp;</td>
+		  <td class="label_v"><b>VO</b></td>
+		  <td class="label_v"><b>CR</b></td>
+		  <td class="label_v"><b>BN</b></td>
+		  <td class="label_v"><b>LV</b></td>
+		  <td class="label_v"><b>WD</b></td>
+		  <td class="label_v"><b>FT</b></td>
+		  <td class="label_v"><b>JU</b></td>
+		  <td class="label_v"><b>MA</b></td>
+		  <td class="label_v"><b>IC</b></td>
+		</tr>
+		<tr>
+		  <td class="label_h"><b>PK</b></td>
+		  <td class="box"><span name="attr_envsk_vo_pk"></span></td>
+		  <td class="box"><span name="attr_envsk_cr_pk"></span></td>
+		  <td class="box"><span name="attr_envsk_bn_pk"></span></td>
+		  <td class="box"><span name="attr_envsk_lv_pk"></span></td>
+		  <td class="box"><span name="attr_envsk_wd_pk"></span></td>
+		  <td class="box"><span name="attr_envsk_ft_pk"></span></td>
+		  <td>&nbsp;</td>
+		  <td>&nbsp;</td>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td class="label_h"><b>MN</b></td>
+		  <td class="box"><span name="attr_envsk_vo_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_cr_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_bn_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_lv_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_wd_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_ft_mn"></span></td>
+		  <td class="box"><span name="attr_envsk_ju_mn"></span></td>
+		  <td>&nbsp;</td>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td class="label_h"><b>HL</b></td>
+		  <td class="box"><span name="attr_envsk_vo_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_cr_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_bn_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_lv_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_wd_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_ft_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_ju_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_ma_hl"></span></td>
+		  <td class="box"><span name="attr_envsk_ic_hl"></span></td>
+		</tr>
+		<tr>
+		  <td class="label_h"><b>FL</b></td>
+		  <td>&nbsp;</td>
+		  <td class="box"><span name="attr_envsk_cr_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_bn_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_lv_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_wd_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_ft_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_ju_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_ma_fl"></span></td>
+		  <td class="box"><span name="attr_envsk_ic_fl"></span></td>
+		</tr>
+		<tr>
+		  <td class="label_h" colspan="8">Inland Water <b>(IN)</b></td>
+		  <td class="box"><span name="attr_envsk_in"></span></td>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td class="label_h" colspan="8">Water Surface <b>(SF)</b></td>
+		  <td class="box"><span name="attr_envsk_sf"></span></td>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td class="label_h" colspan="8">Water Submerged <b>(SB)</b></td>
+		  <td class="box"><span name="attr_envsk_sb"></span></td>
+		  <td>&nbsp;</td>
+		</tr>
+	      </table>
+	    </td>
+	    <td style="vertical-align: top;">
+	      <table>
+		<tr>
+		  <th colspan="2">Gravity Skill Levels</th>
+		</tr>
+		<tr>
+		  <td>0.0&ndash;0.4 G (NW)</td>
+		  <td class="box"><span name="attr_gravsk_nw"></span></td>
+		</tr>
+		<tr>
+		  <td>0.7&ndash;1.0 G (LT)</td>
+		  <td class="box"><span name="attr_gravsk_lt"></span></td>
+		</tr>
+		<tr>
+		  <td>1.3&ndash;1.7 G (HY)</td>
+		  <td class="box"><span name="attr_gravsk_hy"></span></td>
+		</tr>
+		<tr>
+		  <td>2.0&ndash;2.5 G (EX)</td>
+		  <td class="box"><span name="attr_gravsk_ex"></span></td>
+		</tr>
+	      </table>
+	    </td>
+	  </tr>	    
+	</table>		      
+	<p>Accustomed to <span name="attr_natTemp_disp"></span></p>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>Current movement: <span name="attr_curmove"></span> hexes
+	(<span name="attr_curmoveday"></span>km/day)</h3>
+    </td>
+  </tr>
+</table>
+</div>
+  
+<div class="sheet-combat">
+  <h2>Combat</h2>
+
+  <h3>Unarmed Combat</h3>
+
+  <div class="sheet-headers">
+    <span style="width: 3em; display: inline-block;">&nbsp;</span>
+    <span style="width: 7em; display: inline-block;">Weapon</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">Level</span>
+    <span style="width: 3em; display: inline-block; text-align: centerl">Hit</span>
+  </div>
+  <div>
+    <button type="roll"
+            name="close_combat"
+	    value="\n!closeCombatTargetSelect @{character_id} -1 @{unarmed_defense} 0">
+    </button>
+    <span>Unarmed Combat</span>
+    <input type="number" name="attr_unarmed_skill" style="width: 3em; display: inline-block;" readonly />
+    <input type="number" name="attr_unarmed_defense" style="width: 3em; display: inline-block;" readonly />
+  </div>
+
+  <h3>Close Combat Weapons</h3>
+  <div class="sheet-headers">
+    <span style="width: 3em; display: inline-block;">&nbsp;</span>
+    <span style="width: 4em; display: inline-block;">Carried</span>
+    <span style="width: 10em; display: inline-block;">Weapon</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">Level</span>
+    <span style="width: 3em; display: inline-block; text-align: centerl">Hit</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Mass</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Count</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Damage</span>
+  </div>
+  <fieldset class="repeating_ccwpn">
+    <div class="sheet-repeating_ccwpn">
+      <button type="roll"
+              name="close_combat"
+	      value="\n!closeCombatTargetSelect @{character_id} @{weapon} @{hit} 0">
+      </button>
+      <select name="attr_carried" style="width: 4em">
+	<option value="1">Yes</option>
+	<option value="0">No</option>
+      </select>
+      <select name="attr_weapon" style="width: 11em">
+	<option value="0">Dagger</option>
+	<option value="1">Sword</option>
+      </select>
+      <input type="number" name="attr_skllevel" style="width: 3em; display: inline-block;" readonly />
+      <input type="number" name="attr_hit" style="width: 3em; display: inline-block;" readonly />
+      <input type="number" name="attr_mass" style="width: 4em; display: inline-block;" readonly /> 
+      <input type="number" name="attr_count" style="width: 3em; display: inline-block;" />
+      <select name="attr_damage" style="width: 10em">
+	<option value="1">None</option>
+	<option value="2">Superficial</option>
+	<option value="5">Light</option>
+	<option value="6">Heavy</option>
+	<option value="7">Partially destroyed</option>
+	<option value="8">Destroyed</option>
+      </select>
+    </div>
+  </fieldset>
+  <input type="hidden" name="attr_ccwpnmass" />
+  
+    <h3>Ranged Weapons</h3>
+  <div class="sheet-headers">
+    <span style="width: 3em; display: inline-block;">&nbsp;</span>
+    <span style="width: 4em; display: inline-block;">Carried</span>
+    <span style="width: 10em; display: inline-block;">Weapon</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">Level</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">0</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">1&ndash;4</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">5&ndash;13</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">14&ndash;25</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">26&ndash;40</span>
+    <span style="width: 3em; display: inline-block; text-align: center">Hit</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Rate</span>
+    <span style="width: 3.3em; display: inline-block; text-align: center;">Mass</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Count</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Damage</span>
+  </div>
+  <fieldset class="repeating_rwpn">
+    <div class="sheet-repeating_rwpn">
+      <button type="roll"
+              name="ranged_fire"
+	      value="\n!fireWeapon @{character_id} @{target|defender|token_id} @{weapon} @{range_0} @{range_2} @{range_4} @{range_6} @{range_8} @{hit} ?{Number of shots (default 1)} ?{Modifiers (except recoil & target attributes)}">
+      </button>
+      <select name="attr_carried" style="width: 4em">
+	<option value="1">Yes</option>
+	<option value="0">No</option>
+      </select>
+      <select name="attr_weapon" style="width: 11em">
+	<option value="0">Paint Gun (CL6)</option>
+	<option value="1">Paint Gun (CL8)</option>
+	<option value="2">Arc Gun</option>
+	<option value="3">Pistol</option>
+	<option value="4">Plastic Pistol</option>
+	<option value="5">Needle Pistol</option>
+	<option value="6">Laser Pistol (CL6)</option>
+	<option value="7">Laser Pistol (CL8)</option>
+	<option value="8">Stun Pistol (CL7)</option>
+	<option value="9">Stun Pistol (CL8)</option>
+	<option value="10">Machine Gun</option>
+	<option value="11">Submachine Gun</option>
+	<option value="12">Musket</option>
+	<option value="13">Rifle</option>
+	<option value="14">Carbine</option>
+	<option value="15">Needle Rifle (CL5)</option>
+	<option value="16">Needle Rifle (CL7)</option>
+	<option value="17">Short Bow</option>
+	<option value="18">Long Bow</option>
+	<option value="19">Crossbow</option>
+	<option value="20">Frag. Grenade</option>
+	<option value="21">Smoke Grenade</option>
+	<option value="22">Ill. Grenade</option>
+	<option value="23">Gas Grenade</option>
+	<option value="24">Dagger</option>
+      </select>
+      <select name="attr_wpnskllvl" style="width: 4em">
+	<option value="-1">---</option>
+	<option  value="0">X</option>
+	<option  value="1">1</option>
+	<option  value="2">2</option>
+	<option  value="3">3</option>
+	<option  value="4">4</option>
+	<option  value="5">5</option>
+	<option  value="6">6</option>
+	<option  value="7">7</option>
+	<option  value="8">8</option>
+	<option  value="9">9</option>
+      </select>
+      <input name="attr_range_0" style="width: 3em; display: inline-block;" readonly />
+      <input name="attr_range_2" style="width: 3em; display: inline-block;" readonly />
+      <input name="attr_range_4" style="width: 3em; display: inline-block;" readonly />
+      <input name="attr_range_6" style="width: 4em; display: inline-block;" readonly />
+      <input name="attr_range_8" style="width: 4em; display: inline-block;" readonly />
+      <input type="number" name="attr_hit" style="width: 3em; display: inline-block;" readonly />
+      <input type="number" name="attr_rate" style="width: 3em; display: inline-block;" readonly />
+      <input type="number" name="attr_mass" style="width: 3em; display: inline-block;" readonly /> 
+      <input type="number" name="attr_count" style="width: 3em; display: inline-block;" />
+      <select name="attr_damage" style="width: 10em">
+	<option value="1">None</option>
+	<option value="2">Superficial</option>
+	<option value="5">Light</option>
+	<option value="6">Heavy</option>
+	<option value="7">Partially destroyed</option>
+	<option value="8">Destroyed</option>
+      </select>
+    </div>
+  </fieldset>
+  <input type="hidden" name="attr_rwpnmass" />
+
+  <h3>Total weapons mass carried: <span name="attr_wpntotmass"></span> kg</h3>
+
+  <hr />
+  
+  <h3>Armor and apparel</h3>
+  <div class="sheet-headers">
+    <span style="width: 2em; display: inline-block;">&nbsp;</span>
+    <span style="width: 4em; display: inline-block;">Worn?</span>
+    <span style="width: 4em; display: inline-block;">Partial?</span>
+    <span style="width: 17em; display: inline-block;">Type</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Air supply</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Encum.</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Proj.<br />Def.</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Beam<br />Def.</span>
+    <span style="width: 2em; display: inline-block; text-align: center;">Hit</span>
+    <span style="width: 4em; display: inline-block; text-align: center;">Mass</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Count</span>
+    <span style="width: 3em; display: inline-block; text-align: center;">Damage</span>
+  </div>
+  <fieldset class="repeating_armor">
+    <div class="sheet-repeating_armor">
+      <button type="roll"
+              name="close_combat"
+	      value="\n!closeCombatTargetSelect @{character_id} @{armor} @{hit} 1">
+      </button>
+      <select name="attr_worn" style="width: 4em">
+	<option value="1">Yes</option>
+	<option value="0">No</option>
+      </select>
+      <select name="attr_part" style="width: 4em">
+	<option value="1">Yes</option>
+	<option value="0">No</option>
+      </select>
+      <select name="attr_armor" style="width: 17em">
+	<option  value="0">Reflective (CL6)</option>
+	<option  value="1">Reflective (CL8)</option>
+	<option  value="2">Impact (CL5)</option>
+	<option  value="3">Impact (CL7) (a)</option>
+	<option  value="4">Reflective/Impact (CL7) (a)</option>
+	<option  value="5">Reflective/Impact (CL8) (a)</option>
+	<option  value="6">Armor Vest</option>
+	<option  value="7">Respirator Helmet (CL6)</option>
+	<option  value="8">Respirator Helmet (CL8)</option>
+	<option  value="9">Battle Sleeve</option>
+	<option value="10">Force Field (On)</option>
+	<option value="11">Force Field (Off)</option>
+	<option value="12">Expedition Suit (CL5)</option>
+	<option value="13">Expedition Suit (CL7)</option>
+	<option value="14">Armored Carapace</option>
+	<option value="15">Armored Carapace</option>
+	<option value="16">Armored Carapace</option>
+	<option value="17">Chitinous Carapace</option>
+	<option value="18">Chitinous Carapace</option>
+	<option value="19">Chitinous Carapace</option>
+	<option value="20">Reflective Carapace</option>
+	<option value="21">Reflective Carapace</option>
+	<option value="22">Reflective Carapace</option>
+	<option value="23">Reflective Carapace</option>
+	<option value="24">Reflective Carapace</option>
+	<option value="25">Reflective Carapace</option>
+      </select>
+      <input name="attr_air" style="width: 3em; display: inline-block;" readonly />
+      <input name="attr_encum" style="width: 3em; display: inline-block;" readonly />
+      <input name="attr_projdef" style="width: 3em; display: inline-block;" />
+      <input name="attr_beamdef" style="width: 3em; display: inline-block;" />
+      <input type="number" name="attr_hit" style="width: 3em; display: inline-block;" readonly />
+      <input type="number" name="attr_mass" style="width: 3.3em; display: inline-block;" readonly /> 
+      <input type="number" name="attr_count" style="width: 3em; display: inline-block;" />
+      <select name="attr_damage" style="width: 10em">
+	<option value="1">None</option>
+	<option value="2">Superficial</option>
+	<option value="5">Light</option>
+	<option value="6">Heavy</option>
+	<option value="7">Partially destroyed</option>
+	<option value="8">Destroyed</option>
+      </select>
+    </div>
+  </fieldset>
+  <h3>Total armor mass worn: <span name="attr_armortotmass"></span> kg</h3>
+
+</div>
+
+<div class="sheet-heritage">
+  <h2>Heritage</h2>
+  <span>
+    Date of Birth: <input type="text" name="attr_born"
+				style="width: 10ex" />
+      (age: <input type="number" name="attr_age" value="20" />)<br />
+      Gender: <input type="text" name="attr_gender" /><br />
+<br />
+Potentials:
+<table>
+  <tr>
+    <td>Physique:</td>
+    <td><select style="width: 6ex" name="attr_potPh">
+	<option value="0.5">&frac12;</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Coordination:</td>
+    <td><select style="width: 6ex" name="attr_potCo">
+	<option value="0.5">&frac12;</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Intellect:</td>
+    <td><select style="width: 6ex" name="attr_potIn">
+	<option value="0.5">&frac12;</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Social Background:</td>
+    <td><select style="width: 6ex" name="attr_potSB">
+	<option value="0.5">&frac12;</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+    </select></td>
+  </tr>
+</table>
+<br />
+<br />
+
+Planet of origin: <input type="text" name="attr_origin"
+			 style="width: 35em" /><br />
+Native environ: <select style="width: 20ex" name="attr_natFeature">
+  <option value="VO">Volcanic</option>
+  <option value="CR">Craters</option>
+  <option value="BN">Barren</option>
+  <option value="LV">Light vegetation</option>
+  <option value="WD">Woods</option>
+  <option value="FT">Forest</option>
+  <option value="MA">Marsh</option>
+  <option value="IC">Ice</option>
+  <option value="NA">&nbsp;</option>
+</select>-<select style="width: 20ex" name="attr_natContour">
+  <option value="PK">Peaks</option>
+  <option value="MN">Mountains</option>
+  <option value="HL">Hills</option>
+  <option value="FL">Flat</option>
+  <option value="IN">Inland water</option>
+  <option value="SF">Water surface</option>
+  <option value="SB">Water (submerged)</option>
+</select><br />
+Native gravity class: <select style="width: 30ex" name="attr_natGrav">
+  <option value="NW">Near weightless (0.0&ndash;0.4 g)</option>
+  <option value="LT">Light (0.7&ndash;1.0 g)</option>
+  <option value="HY">Heavy (1.3&ndash;1.7 g)</option>
+  <option value="EX">Extreme (2.0&ndash;2.5 g)</option>
+</select><br />
+Native temperatures: <select style="width: 25ex" name="attr_natTemp">
+  <option value="1">Cold (&minus;50&ndash;0&deg;F)</option>
+  <option value="2">Normal (25&ndash;100&deg;F)</option>
+  <option value="3">Hot (125&ndash;175&deg;F)</option>
+</select><br />
+<br />
+Study Points: <input type="number" style="width: 6ex" name="attr_studyPoints" /><br />
+Social Standing: <select style="width: 35ex" name="attr_socialStanding">
+  <option value="1">Unfostered orphan</option>
+  <option value="2">Oppressed minority</option>
+  <option value="3">Poor colonist family</option>
+  <option value="4">Family fallen on hard times</option>
+  <option value="5">Communal colony</option>
+  <option value="6">Lower middle class family</option>
+  <option value="7">Skilled tech family</option>
+  <option value="8">Local establishment</option>
+  <option value="9">Independent trading family</option>
+  <option value="10">Family runs planetary corp</option>
+  <option value="11">Family dominates planet</option>
+  <option value="12">Family dominates star system</option>
+  <option value="13">Family influences entire Federation</option>
+  <option value="14">Wealthy dilletante</option>
+</select>
+<br />
+
+<br />
+
+</span>
+</div>
+<div class="sheet-development">
+    <h2>Development</h2>
+    <span>Initial Skill Points: <input type="number" name="attr_initSP" /><br />
+    
+      Studied:
+      <table>
+	<tr>
+	  <td>Theoretical Science:&nbsp</td>
+	  <td><input type="checkbox" name="attr_study_ThS" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_ThS2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>Applied Science:</td>
+	  <td><input type="checkbox" name="attr_study_ApS" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_ApS2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>Business:</td>
+	  <td><input type="checkbox" name="attr_study_Bus" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_Bus2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>Humanities:</td>
+	  <td><input type="checkbox" name="attr_study_Hum" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_Hum2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>The Mind:</td>
+	  <td><input type="checkbox" name="attr_study_Min" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_Min2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>The Body:</td>
+	  <td><input type="checkbox" name="attr_study_Bod" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_Bod2" value="1" /></td>
+	</tr>
+	<tr>
+	  <td>Military:</td>
+	  <td><input type="checkbox" name="attr_study_Mil" value="1" /></td>
+	  <td><input type="checkbox" name="attr_study_Mil2" value="1" /></td>
+	</tr>
+      </table>
+      
+      <br />
+<br />
+
+<table>
+  <tr>
+    <th>ST:</th>
+    <td><input type="number" name="attr_st" /> / <input type="number" name="attr_st_max" /></td>
+    <td>&nbsp;</td>
+    <th>IN:</th>
+    <td><input type="number" name="attr_intl" /></td> <!-- "in" and "int" are reserved words, so "attr_in" and "attr_int" cause problems -->
+  </tr>
+  <tr>
+    <th>EN:</th>
+    <td><input type="number" name="attr_en" /> / <input type="number" name="attr_en_max" /></td>
+    <td>&nbsp;</td>
+    <th>MP:</th>
+    <td><input type="number" name="attr_mp" /></td>
+  </tr>
+  <tr>
+    <th>DX:</th>
+    <td><input type="number" name="attr_dx" /> / <input type="number" name="attr_dx_max" /></td>
+    <td>&nbsp;</td>
+    <th>LD:</th>
+    <td><input type="number" name="attr_ld" /></td>
+  </tr>
+  <tr>
+    <th>AY:</th>
+    <td><input type="number" name="attr_ay" /> / <input type="number" name="attr_ay_max" /></td>
+    <td>&nbsp;</td>
+    <th>EM:</th>
+    <td><input type="number" name="attr_em" /></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <th>AG:</th>
+    <td><input type="number" name="attr_ag" /></td>
+  </tr>
+</table>
+
+<br />
+      <p>Current movement: <input type="number" name="attr_curmove" readonly /> hexes (<input type="number" name="attr_curmoveday" readonly /> km/day)</p>
+      <p class="warning"><span name="attr_warn"></span></p>
+        
+    </span>
+</div>
+
+<div class="sheet-profession">
+    <h2>Profession</h2>
+    <span>
+      <table>
+	<tr>
+	  <td>Profession:</td>
+	  <td><select name="attr_profession">
+	      <option>Artist</option>
+	      <option>Astroguard</option>
+	      <option>Civil Inspector</option>
+	      <option>Colonist</option>
+	      <!-- <option>Contactor</option> -->
+	      <option>Diplomat</option>
+	      <option>Doctor</option>
+	      <option>Enforcer</option>
+	      <option>Explorer</option>
+	      <option>Freefaller</option>
+	      <option>Handyman</option>
+	      <option>Interstellar Trader</option>
+	      <option>Lawman</option>
+	      <option>Merchant</option>
+	      <option>Missionary</option>
+	      <option>Patternist</option>
+	      <option>Ranger</option>
+	      <option>Reporter/Journalist</option>
+	      <option>Scientist</option>
+	      <option>Scout</option>
+	      <option>Space Pirate</option>
+	      <option>Space Technician</option>
+	      <option>Spacetrooper</option>
+	      <option>Spy</option>
+	      <option>Star Sailor</option>
+	      <option>Thinker</option>
+	      <option>Zero-G Miner</option>
+	  </select></td>
+	</tr>
+	<tr>
+	  <td>Years:</td>
+	  <td><input type="number" name="attr_prof_yrs" /></td>
+	</tr>
+	<tr>
+	  <td>Skill Points:</td>
+	  <td><input type="number" name="attr_sp" /></td>
+	</tr>
+	<tr>
+	  <td>Benefit:</td>
+	  <td><select name="attr_benefit">
+	      <option>A</option>
+	      <option>B</option>
+	      <option>C</option>
+	      <option>D</option>
+	      <option>E</option>
+	      <option>F</option>
+	    </select></td>
+	</tr>
+	<tr>
+	  <td>Money:</td>
+	  <td><input type="number" name="attr_money" /></td>
+	</tr>
+      </table>
+    </span>
+    
+<!--
+    We have a number of "global" variables: current date, current
+    environ, etc.
+  -->
+
+<input type="hidden" name="attr_globYear" value="2410" />
+<input type="hidden" name="attr_globOrdDate" value="183" />
+<input type="hidden" name="attr_globFeature" />
+<input type="hidden" name="attr_globContour" />
+<input type="hidden" name="attr_globEnviron" />
+<input type="hidden" name="attr_globEnvName" />
+<input type="hidden" name="attr_globEnvSkillName" />
+<input type="hidden" name="attr_globEnvTV" />
+<input type="hidden" name="attr_globEnvARMM" />
+<input type="hidden" name="attr_globWorldSize" />
+<input type="hidden" name="attr_globGravity" />
+<input type="hidden" name="attr_globGravClass" />
+<input type="hidden" name="attr_globGravARMM" />
+
+<!-- Plus a few convenience variables. -->
+
+<input type="hidden" name="attr_max_st_dx_ay" /> <!-- Maximum of ST, DX, AY -->
+<input type="hidden" name="attr_max_dx_ay" /> <!-- Maximum of DX, AY -->
+<input type="hidden" name="attr_full_armor" /> <!-- Full armor (or expedition suit) -->
+<input type="hidden" name="attr_battlefield" /> <!-- Battlefield skill -->
+<input type="hidden" name="attr_body_armor" /> <!-- Body armor skill -->
+<input type="hidden" name="attr_body_eva" /> <!-- Greater of body armor or EVA skill -->
+<input type="hidden" name="attr_lsp_handgun" /> <!-- Greater of laser/stun pistol or handgun skill -->
+<input type="hidden" name="attr_blades" /> <!-- Blades skill -->
+<input type="hidden" name="attr_unarmed_skill" /> <!-- Unarmed combat skill -->
+<input type="hidden" name="attr_unarmed_defense" /> <!-- Unarmed defense for close combat -->
+<input type="hidden" name="attr_close_defense" /> <!-- Default defense for close combat -->
+<input type="hidden" name="attr_encumbrance" /> <!-- Total encumbrance -->
+<input type="hidden" name="attr_augment" /> <!-- Wearing augmented armor? -->
+<input type="hidden" name="attr_init_npc" /> <!-- Base initiative versus NPC -->
+<input type="hidden" name="attr_init_creature" /> <!-- Base initiative versus creature (or creature initiative) -->
+<input type="hidden"  name="attr_parmor1" />   <!-- Armor projectile protection for hit table result 1 -->
+<input type="hidden"  name="attr_parmor2" /> <!-- Armor projectile protection for hit table result 2 -->
+<input type="hidden"  name="attr_parmor3" /> <!-- Armor projectile protection for hit table result 3 -->
+<input type="hidden"  name="attr_parmor4" /> <!-- Armor projectile protection for hit table result 4 -->
+<input type="hidden"  name="attr_parmor5" /> <!-- Armor projectile protection for hit table result 5 -->
+<input type="hidden"  name="attr_parmor6" /> <!-- Armor projectile protection for hit table result 6 -->
+<input type="hidden"  name="attr_parmor7" /> <!-- Armor projectile protection for hit table result 7 -->
+<input type="hidden"  name="attr_parmor8" /> <!-- Armor projectile protection for hit table result 8 -->
+<input type="hidden"  name="attr_parmor9" /> <!-- Armor projectile protection for hit table result 9 -->
+<input type="hidden" name="attr_parmor10" /> <!-- Armor projectile protection for hit table result 10 -->
+<input type="hidden"  name="attr_barmor1" /> <!-- Armor beam protection for hit table result 1 -->
+<input type="hidden"  name="attr_barmor2" /> <!-- Armor beam protection for hit table result 2 -->
+<input type="hidden"  name="attr_barmor3" /> <!-- Armor beam protection for hit table result 3 -->
+<input type="hidden"  name="attr_barmor4" /> <!-- Armor beam protection for hit table result 4 -->
+<input type="hidden"  name="attr_barmor5" /> <!-- Armor beam protection for hit table result 5 -->
+<input type="hidden"  name="attr_barmor6" /> <!-- Armor beam protection for hit table result 6 -->
+<input type="hidden"  name="attr_barmor7" /> <!-- Armor beam protection for hit table result 7 -->
+<input type="hidden"  name="attr_barmor8" /> <!-- Armor beam protection for hit table result 8 -->
+<input type="hidden"  name="attr_barmor9" /> <!-- Armor beam protection for hit table result 9 -->
+<input type="hidden" name="attr_barmor10" /> <!-- Armor beam protection for hit table result 10 -->
+
+</div>
+
+<div class="sheet-skills">
+  <h2>Skills</h2>
+  <!-- (lsp_handgun = <span name="attr_lsp_handgun"></span>) -->
+  <!-- (blades = <span name="attr_blades"></span>) -->
+  <!-- (unarmed_skill = <span name="attr_unarmed_skill"></span>)<br /> -->
+  <!-- (close_defense = <span name="attr_close_defense"></span>)<br /> -->
+  <!-- (body_armor = <span name="attr_body_armor"></span>)<br /> -->
+  <!-- (full_armor = <span name="attr_full_armor"></span>) -->
+
+  <hr />
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+	<h3>Military Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_milskill">
+	  <div class="sheet-milskdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <select name="attr_skmilname">
+	      <option value="ambush">Ambush</option>
+	      <option value="artillery">Artillery</option>
+	      <option value="battlefield">Battlefield</option>
+	      <option value="blades">Blades</option>
+	      <option value="body_armor">Body armor</option>
+	      <option value="demolitions">Demolitions</option>
+	      <option value="eva">EVA</option>
+	      <option value="jetpack">Jet pack</option>
+	      <option value="unarmed_combat">Unarmed combat</option>
+	    </select>
+	    <select name="attr_skmillvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skmilep" />
+	  </div>
+	</fieldset>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td style="vertical-align: top;">
+	<h3>Weapon Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_wpnskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <select name="attr_skwpnname">
+	      <option value="arcgun">Arc gun</option>
+	      <option value="blades">Blades</option>
+	      <option value="bows">Bows</option>
+	      <option value="handguns">Handguns</option>
+	      <option value="grenades">Grenades</option>
+	      <option value="laser_stun_pistol">Laser/stun pistol</option>
+	      <option value="longarms">Longarms</option>
+	      <option value="machineguns">Machine guns</option>
+	      <option value="paintgun">Paint gun</option>
+	    </select>
+	    <select name="attr_skwpnlvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skwpnep" />
+	  </div>
+	</fieldset>
+      </td>
+    </tr>
+  </table>
+  
+  <hr />
+
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+	<h3>Spaceship Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_spcskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_skspcname" style="width: 9em" /> -->
+	    <select name="attr_skspcname">
+	      <option value="gunnery">Gunnery</option>
+	      <option value="missile_guidance">Missile guidance</option>
+	      <option value="pilot">Pilot</option>
+	      <option value="space_tactics">Space tactics</option>
+	    </select>
+	    <select name="attr_skspclvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skspcep" />
+	  </div>
+	</fieldset>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td style="vertical-align: top;">
+	<h3>Psionic Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_psiskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_skpsiname" style="width: 11em" /> -->
+	    <select name="attr_skpsiname">
+	      <option value="body_control">Body control</option>
+	      <option value="life_sense">Life sense</option>
+	      <option value="mind_control">Mind control</option>
+	      <option value="navigation">Navigation</option>
+	      <option value="psionic_boost">Psionic boost</option>
+	      <option value="psionic_communication">Psionic communication</option>
+	      <option value="psychokinesis">Psychokinesis</option>
+	      <option value="psychometry">Psychometry</option>
+	    </select>
+	    <select name="attr_skpsilvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skpsiep" />
+	  </div>
+	</fieldset>
+      </td>
+    </tr>
+  </table>
+
+  <hr />
+
+  <h3>Vehicle Skills</h3>
+  <div class="sheet-headers">
+    <span style="width: 9em; display: inline-block;">Skill</span>
+    <span style="width: 11em; display: inline-block;">Subskill</span>
+    <span style="width: 3em; display: inline-block;">Level</span>
+    <span>EP</span>
+  </div>
+  <fieldset class="repeating_vehskill">
+    <div class="sheet-skdata">
+      <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+      <select name="attr_skvehtype" style="width: 9em">
+	<option>Air Vehicles</option>
+	<option>Ground Vehicles</option>
+	<option>Marine Vehicles</option>
+	<option>Military Vehicles</option>
+      </select>
+      <input type="text" name="attr_skvehname" style="width: 11em" />
+      <select name="attr_skvehlvl" style="width: 3em">
+	<option value="-1">---</option>
+	<option  value="0">X</option>
+	<option  value="1">1</option>
+	<option  value="2">2</option>
+	<option  value="3">3</option>
+	<option  value="4">4</option>
+	<option  value="5">5</option>
+	<option  value="6">6</option>
+	<option  value="7">7</option>
+	<option  value="8">8</option>
+	<option  value="9">9</option>
+      </select>
+      <input type="number" name="attr_skvehep" />
+    </div>
+  </fieldset>
+
+  <hr />
+
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+	<h3>Scientific Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_sciskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_sksciname" style="width: 9em" /> -->
+	    <select name="attr_sksciname">
+	      <option value="astronomy">Astronomy</option>
+	      <option value="biology">Biology</option>
+	      <option value="chemistry">Chemistry</option>
+	      <option value="culture">Culture</option>
+	      <option value="diagnosis">Diagnosis</option>
+	      <option value="geology">Geology</option>
+	      <option value="physics">Physics</option>
+	      <option value="planetology">Planetology</option>
+	      <option value="programming">Programming</option>
+	      <option value="treatment">Treatment</option>
+	      <option value="xenology">Xenology</option>
+	    </select>
+	    <select name="attr_skscilvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_sksciep" />
+	  </div>
+	</fieldset>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td style="vertical-align: top;">
+	<h3>Technical Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_tekskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_sktekname" style="width: 9em" /> -->
+	    <select name="attr_sktekname">
+	      <option value="compu_robot_tech">Compu/robot tech</option>
+	      <option value="construction">Construction</option>
+	      <option value="electro_tech">Electro tech</option>
+	      <option value="energy_tech">Energy tech</option>
+	      <option value="psion_tech">Psion tech</option>
+	      <option value="security">Security</option>
+	      <option value="spaceship_tech">Spaceship tech</option>
+	      <option value="suit_tech">Suit tech</option>
+	      <option value="vehicle_tech">Vehicle tech</option>
+	      <option value="weapon_tech">Weapon tech</option>
+	    </select>
+	    <select name="attr_skteklvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_sktekep" />
+	  </div>
+	</fieldset>
+      </td>
+    </tr>
+  </table>
+  
+  <hr />
+
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+	<h3>Interpersonal Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_intskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_skintname" style="width: 11em" /> -->
+	    <select name="attr_skintname">
+	      <option value="arts">Arts</option>
+	      <option value="diplomacy">Diplomacy</option>
+	      <option value="disguise">Disguise</option>
+	      <option value="economics">Economics</option>
+	      <option value="forgery_counterfeiting">Forgery/counterfeiting</option>
+	      <option value="gambling">Gambling</option>
+	      <option value="law">Law</option>
+	      <option value="linguistics">Linguistics</option>
+	      <option value="perception">Perception</option>
+	      <option value="recruiting">Recruiting</option>
+	      <option value="streetwise">Streetwise</option>
+	      <option value="teaching">Teaching</option>
+	      <option value="trading">Trading</option>
+	    </select>
+	    <select name="attr_skintlvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skintep" />
+	  </div>
+	</fieldset>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td style="vertical-align: top;">
+	<h3>Environmental Skills</h3>
+	<div class="sheet-headers">
+	  <span style="width: 17em; display: inline-block;">Skill</span>
+	  <span style="width: 3em; display: inline-block;">Level</span>
+	  <span>EP</span>
+	</div>
+	<fieldset class="repeating_envskill">
+	  <div class="sheet-skdata">
+	    <!-- <button class="sheet-btn" type="roll" value="&{template:dqcustom} {{title=Skill check}} {{subtitle=@{type} (@{notes}, Rank @{rank})}} {{D100=[[1d100]]}}"></button> -->
+	    <!-- <input type="text" name="attr_skenvname" style="width: 9em" /> -->
+	    <select name="attr_skenvname">
+	      <option value="agriculture">Agriculture</option>
+	      <option value="asteroid_mining">Asteroid mining</option>
+	      <option value="mining">Mining</option>
+	      <option value="survival">Survival</option>
+	      <option value="urban">Urban</option>
+	    </select>
+	    <select name="attr_skenvlvl" style="width: 3em">
+	      <option value="-1">---</option>
+	      <option  value="0">X</option>
+	      <option  value="1">1</option>
+	      <option  value="2">2</option>
+	      <option  value="3">3</option>
+	      <option  value="4">4</option>
+	      <option  value="5">5</option>
+	      <option  value="6">6</option>
+	      <option  value="7">7</option>
+	      <option  value="8">8</option>
+	      <option  value="9">9</option>
+	    </select>
+	    <input type="number" name="attr_skenvep" />
+	  </div>
+	</fieldset>
+      </td>
+    </tr>
+  </table>
+
+  <hr />
+  <h3>Environ skills</h3>
+
+<table>
+<tr>
+<td>
+  <table>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td class="label_v"><b>VO</b></td>
+      <td class="label_v"><b>CR</b></td>
+      <td class="label_v"><b>BN</b></td>
+      <td class="label_v"><b>LV</b></td>
+      <td class="label_v"><b>WD</b></td>
+      <td class="label_v"><b>FT</b></td>
+      <td class="label_v"><b>JU</b></td>
+      <td class="label_v"><b>MA</b></td>
+      <td class="label_v"><b>IC</b></td>
+    </tr>
+    <tr>
+      <td class="label_h"><b>PK</b></td>
+      <td class="box"><select name="attr_envsk_vo_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_cr_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_bn_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_lv_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_wd_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ft_pk" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="label_h"><b>MN</b></td>
+      <td class="box"><select name="attr_envsk_vo_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_cr_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_bn_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_lv_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_wd_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ft_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ju_mn" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="label_h"><b>HL</b></td>
+      <td class="box"><select name="attr_envsk_vo_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_cr_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_bn_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_lv_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_wd_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ft_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ju_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ma_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ic_hl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td class="label_h"><b>FL</b></td>
+      <td>&nbsp;</td>
+      <td class="box"><select name="attr_envsk_cr_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_bn_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_lv_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_wd_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ft_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ju_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ma_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td class="box"><select name="attr_envsk_ic_fl" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td class="label_h" colspan="8">Inland Water <b>(IN)</b></td>
+      <td class="box"><select name="attr_envsk_in" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="label_h" colspan="8">Water Surface <b>(SF)</b></td>
+      <td class="box"><select name="attr_envsk_sf" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="label_h" colspan="8">Water Submerged <b>(SB)</b></td>
+      <td class="box"><select name="attr_envsk_sb" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+</td>
+<td>
+  <table>
+    <tr>
+      <th colspan="2">Gravity Skill Levels</th>
+    </tr>
+    <tr>
+      <td>0.0&ndash;0.4 G (NW)</td>
+      <td class="box"><select name="attr_gravsk_nw" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td>0.7&ndash;1.0 G (LT)</td>
+      <td class="box"><select name="attr_gravsk_lt" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td>1.3&ndash;1.7 G (HY)</td>
+      <td class="box"><select name="attr_gravsk_hy" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td>2.0&ndash;2.5 G (EX)</td>
+      <td class="box"><select name="attr_gravsk_ex" style="width: 4em">
+	  <option value="-6">-6</option>
+	  <option value="-5">-5</option>
+	  <option value="-4">-4</option>
+	  <option value="-3">-3</option>
+	  <option value="-2">-2</option>
+	  <option value="-1">-1</option>
+	  <option   value="0">0</option>
+	  <option   value="1">1</option>
+	  <option   value="2">2</option>
+	  <option   value="3">3</option>
+	  <option   value="4">4</option>
+	  <option   value="5">5</option>
+	  <option   value="6">6</option>
+      </select></td>
+    </tr>
+  </table>
+</td>
+</tr>
+</table>
+
+</div>
+
+
+<div class="sheet-equipment">
+    <h2>Equipment</h2>
+  <div class="sheet-headers">
+    <span style="width: 5em; display: inline-block;">Carried</span>
+    <span style="width: 17em; display: inline-block;">Name</span>
+    <span style="width: 3em; display: inline-block;">Mass</span>
+    <span style="width: 4em; display: inline-block;">Count</span>
+    <span style="width: 3em; display: inline-block;">Damage</span>
+  </div>
+  <fieldset class="repeating_equipment">
+    <div class="sheet-repeating-equipment">
+      <div class="sheet-summary">
+	<select name="attr_carried" style="width: 5em">
+	  <option value="1">Yes</option>
+	  <option value="0">No</option>
+	</select>
+	<input type="text" name="attr_name" />
+	<input type="number" value="0" min="0" step="any" name="attr_mass" />
+	<input type="number" name="attr_count" value="0" min="0" />
+	<select name="attr_damage" style="width: 10em">
+	  <option value="1">None</option>
+	  <option value="2">Superficial</option>
+	  <option value="5">Light</option>
+	  <option value="6">Heavy</option>
+	  <option value="7">Partially destroyed</option>
+	  <option value="8">Destroyed</option>
+	</select>
+      </div>
+    </div>
+  </fieldset>
+  <hr />
+  <h3>Total equipment mass carried: <span name="attr_eqtotmass"></span> kg</h3>
+  <h3>Total weapons mass carried: <span name="attr_wpntotmass"></span> kg</h3>
+  <h3>Total armor mass worn: <span name="attr_armortotmass"></span> kg</h3>
+  <hr />
+  <h3>Total mass carried: <span name="attr_alltotmass"></span> kg</h3>
+  <h3>Total weight carried: <span name="attr_alltotwgt"></span> kg
+    (gravity: <span name="attr_globGravity"></span> g)</h3>
+  <br />
+  <h3>Current movement: <span name="attr_curmove"></span> hexes (<span name="attr_curmoveday"></span>km/day)</h3>
+</div>
+
+<div class="sheet-southernwild">
+  <h2>Creature</h2>
+
+  <p><button type="roll"
+             name="close_combat_creature"
+	     value="\n!closeCombatTargetSelect @{character_id} -1 @{close_defense} 0">
+    </button>
+    Unarmed Combat (<span name="attr_close_defense"></span>)</p>
+
+  <table>
+    <tr>
+      <th>Combat:</th>
+      <td><input type="number" name="attr_combat" /> / <input type="number" name="attr_combat_max" /></td>
+      <td>&nbsp;</td>
+      <th>IN:</th>
+      <td><input type="number" name="attr_intl" /></td> <!-- "in" and "int" are reserved words, so "attr_in" and "attr_int" cause problems -->
+    </tr>
+    <tr>
+      <th>AY:</th>
+      <td><input type="number" name="attr_ay" /> / <input type="number" name="attr_ay_max" /></td>
+      <td>&nbsp;</td>
+      <th>AG:</th>
+      <td><input type="number" name="attr_ag" /></td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th>Initiative base:</th>
+      <td><input type="number" name="attr_init_cbase" />%</td>
+    </tr>
+    <tr>
+      <th>In terrain:</th>
+      <td><input type="number" name="attr_init_creature" />%</td>
+    </tr>
+    <tr>
+      <th>Composition:</th>
+      <td><select name="attr_composition" style="width: 8em;">
+      <option>humanoid</option>
+      <option>mammalian</option>
+      <option>terran-like</option>
+      <option>protein</option>
+      <option>carbon</option>
+      <option>non-carbon</option>
+      </select></td>
+    </tr>
+    <tr>
+      <th>Size:</th>
+    <!-- I *think* the only place we really need this is for to-hit
+    modifiers, so we just make the values those. -->
+      <td><select name="attr_size" style="width: 7em;">
+      <option value="-999">miniscule</option>
+      <option value="-45">very small</option>
+      <option value="-30">small</option>
+      <option value="0" selected>man-sized</option>
+      <option value="20">large</option>
+      <option value="40">one-hex</option>
+      <option value="40">two-hex</option> <!-- applies to whichever hex is targeted -->
+      <option value="40">larger</option> <!-- applies to whichever hex is targeted -->
+	</select> (<input type="number" name=_"attr_hexes" /> hexes)</td>
+    </tr>
+  </table>
+  
+  <div class="sheet-headers">
+    <span style="width: 16em; display: inline-block;">Power</span>
+    <span style="width: 8em; display: inline-block;">When?</span>
+    <span style="width: 4em; display: inline-block;"></span>
+  </div>
+  <fieldset class="repeating_power">
+    <div class="sheet-repeating_power">
+      <select name="attr_power" style="width: 16em">
+	<option>Acid</option>
+	<option>Acidic Circulatory Fluid</option>
+	<option>Adhesive Secretion</option>
+	<option>Armored Carapace</option>
+	<option>Balance Disruption</option>
+	<option>Camouflage</option>
+	<option>Capture</option>
+	<option>Chameleon</option>
+	<option>Chitinous Carapace</option>
+	<option>Dart Shooting</option>
+	<option>Edible</option>
+	<option>Energy absorption</option>
+	<option>Energy Blast</option>
+	<option>Energy Drain</option>
+	<option>Energy Ingestion</option>
+	<option>Entrapment</option>
+	<option>Flight</option>
+	<option>Heightened Hearing/Smelling</option>
+	<option>Illusions</option>
+	<option>Immaterial</option>
+	<option>Inky Discharge</option>
+	<option>Invisibility</option>
+	<option>Kinetic Absorption</option>
+	<option>Mental Attack</option>
+	<option>Mind Control</option>
+	<option>Multiple Attack</option>
+	<option>Poison</option>
+	<option>Psionic Communication</option>
+	<option>Psychokinesis</option>
+	<option>Radar Sense</option>
+	<option>Reflective Carapace</option>
+	<option>Regeneration</option>
+	<option>Swarm Mind</option>
+	<option>Time Dilation</option>
+	<option>Tunnelling</option>
+	<option>Unknown Propulsion</option>
+	<option>Vegetation Control</option>
+	<option>Web Shooting</option>
+      </select>
+      <select name="attr_power_when" style="width: 8em;">
+	<option>Sight</option>
+	<option>Perception</option>
+	<option>Examination</option>
+      </select>
+      <textarea name="attr_power_desc" rows="5" cols="30"></textarea>
+  </fieldset>
+  
+  <h3>Poison parameters:</h3>
+  <p><b>Type:</b>
+    <select>
+      <option>n/a</option>
+      <option>Virulent/Virus</option>
+      <option>Paralytic</option>
+      <option>Psychotic</option>
+    </select><br />
+    <b>Delivery:</b>
+    <select>
+      <option>n/a</option>
+      <option>Touch</option>
+      <option>Attack</option>
+      <option>Discharge</option>
+    </select> (once per
+    <select name="attr_vir_period" style="width: 9em;">
+      <option>n/a</option>
+      <option>Action Round</option>
+      <option>minute</option>
+      <option>hour</option>
+      <option>day</option>
+    </select>)<br />
+    <table>
+      <tr>
+	<th>Spore?</th>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" value="1" /></td>
+      </tr>
+      <tr>
+	<th>Infectious?</th>
+	<td>&nbsp;</td>
+	<td><input type="checkbox" value="1" /></td>
+      </tr>
+  </table></p>
+</div>
+
+<script type="text/worker">
+  
+// IMPORTANT: if you change this here, you must change it in UniverseCombat.js
+// Fields of closeWeapontable in order:
+// 0 hit strength
+// 1 weapon name
+// 2 weapon skill
+// 3 mass (kg)
+// 4 price (T)
+const closeWeaponTable = [
+    [ 6, 'Dagger', 'blades', 0.2, 0.01],
+    [10, 'Sword',  'blades', 2,   0.3,]
+];
+
+// IMPORTANT: if you change this here, you must change it in UniverseCombat.js
+// Fields of rangedWeapontable in order:
+//  0 rate of fire
+//  1 hit strength
+//  2 civ level
+//  3 weapon name
+//  4 weapon skill
+//  5 range_0
+//  6 range_2
+//  7 range_4
+//  8 range_6
+//  9 range_8
+// 10 mass (kg)
+// 11 price (T)
+// 12 damage type (0=projectile, 1=beam, 2=stun)
+// 13 display name
+// 14 recoil
+const rangedWeaponTable = [
+[ 2,  8, 6, 'Paint gun (CL 6)', 'paintgun',      35,   25,   10,  -10,  -25, 12,   7,    1, 'CL6 paint gun', 0],
+[ 6,  8, 8, 'Paint gun (CL 8)', 'paintgun',      35,   25,   10,  -10,  -25,  3,   9,    1, 'CL8 paint gun', 0],
+[ 4, 10, 8, 'Arc gun',          'arcgun',        20,   15,    5,  -10,  -25,  4,  12,    1, 'arc gun', 0],
+[ 4,  5, 5, 'Pistol',           'handguns',      60,   40,    0, -999, -999,  2,   0.08, 0, 'pistol', 1],
+[ 4,  5, 6, 'Plastic pistol',   'handguns',      60,   40,    0, -999, -999,  1,   0.2,  0, 'plastic pistol', 1],
+[ 2,  1, 8, 'Needle pistol',    'handguns',      55,   35,  -10, -999, -999,  2,   2,    0, 'needle pistol', 1],
+[ 1,  6, 6, 'Laser pistol (CL6)',     'lsp_handgun',   60,   40,   20,    0,  -20,  4,   1,    1, 'laser pistol', 0],
+[ 3,  6, 8, 'Laser pistol (CL8)',     'lsp_handgun',   60,   40,   20,    0,  -20,  2,   2,    1, 'laser pistol', 0],
+[ 1,  8, 7, 'Stun pistol (CL7)',      'lsp_handgun',   65,   30, -999, -999, -999,  2,   1,    2, 'stun pistol', 0],
+[ 2,  9, 8, 'Stun pistol (CL8)',      'lsp_handgun',   65,   30, -999, -999, -999,  1,   2,    2, 'stun pistol', 0],
+[15,  7, 5, 'Machine gun',      'machineguns', -999,   40,   20,    0,  -20, 12,   3,    0, 'machine gun', 0],
+[10,  5, 6, 'Submachine gun',   'machineguns',   40,   35,   10,    0, -999,  5,   2,    0, 'submachine gun', 1],
+[ 2,  4, 2, 'Musket',           'longarms',    -999,   0, -  20,  -40, -999,  5,   0.3,  0, 'musket', 1],
+[ 6,  7, 6, 'Rifle',            'longarms',      30,   35,   20,    0,  -15,  3,   0.8,  0, 'rifle', 1],
+[ 4,  6, 5, 'Carbine',          'longarms',      45,   35,   15,   -5,  -25,  3,   0.6,  0, 'carbine', 1],
+[ 1,  1, 5, 'Needle rifle (CL5)',     'longarms',      40,   30,   10,  -20, -999,  5,   2,    0, 'needle rifle', 1],
+[ 2,  1, 7, 'Needle rifle (CL7)',     'longarms',      40,   30,   10,  -20, -999,  3,   3,    0, 'needle rifle', 1],
+[ 3,  4, 1, 'Short bow',        'bows',          15,   25,    0, -999, -999,  1,   0.2,  0, 'short bow', 1],
+[ 2,  6, 1, 'Long bow',         'bows',        -999,   20,   10,    5,  -55,  3,   0.6,  0, 'long bow', 1],
+[ 1,  1, 3, 'Crossbow',         'bows',           0,   30,   10,  -15, -999,  4,   0.5,  0, 'crossbow', 0],
+[ 1, 25, 4, 'Frag. grenade',    'grenades',    -999,   50,  -10,  -60, -999,  0.5, 0.1,  0, 'fragmentation grenade', 0],
+[ 1,  4, 4, 'Smoke grenade',    'grenades',    -999,   50,  -10,  -60, -999,  0.5, 0.1,  0, 'smoke grenade', 0],
+[ 1,  4, 4, 'Illum. grenade',   'grenades',    -999,   50,  -10,  -60, -999,  0.5, 0.1,  0, 'illumination grenade', 0],
+[ 1,  4, 4, 'Gas grenade',      'grenades',    -999,   50,  -10,  -60, -999,  0.5, 0.1,  0, 'gas grenade', 0],
+[ 1,  3, 1, 'Dagger',           'blades',      -999,   10,  -30, -999, -999,  0.2, 0.01, 0, 'dagger', 0],
+];
+
+// IMPORTANT: if you change this here, you must change it in UniverseCombat.js
+// Fields of armorTable in order:
+// 0 type
+// 1 civ level
+// 2 partial_start
+// 3 partial_end
+// 4 mass
+// 5 air
+// 6 encum
+// 7 augmented?
+// 8 projdef
+// 9 beamdef
+// 10 hit
+// Index numbers are given to right for convenience.  
+const armorTable = [
+    ['Reflective (CL6)',        6, 1, 10,  11, 12,   2, 0, 1, 3,  2], //  0
+    ['Reflective (CL8)',        8, 1, 10,   9, 24,   1, 0, 2, 5,  5], //  1
+    ['Impact (CL5)',            5, 1, 10,  22,  0,   5, 0, 2, 1,  9], //  2
+    ['Impact (CL7)',            7, 1, 10,  18, 18,   3, 1, 4, 2, 18], //  3
+    ['Reflective/Impact (CL7)', 7, 1, 10,  20, 18,   4, 1, 3, 4, 11], //  4
+    ['Reflective/Impact (CL8)', 8, 1, 10,  16, 24,   2, 1, 5, 5, 20], //  5
+    ['Armor Vest',              6, 4,  7,  2,   0,   0, 0, 2, 2,  0], //  6
+    ['Respirator Helmet (CL6)', 6, 8, 10,  6,  12,   0, 0, 2, 2,  0], //  7
+    ['Respirator Helmet (CL8)', 8, 8, 10,  4,  24,   0, 0, 4, 4,  0], //  8
+    ['Battle Sleeve',           8, 1,  2,  4,   0,   0, 0, 5, 5, 25], //  9
+    ['Force Field (On)',        8, 1, 10,   2,  0, 999, 0, 6, 0,  0], // 10
+    ['Force Field (Off)',       8, 1, 10,   2,  0,   0, 0, 0, 0,  0], // 11
+    ['Expedition Suit (CL6)',   6, 1, 10,  11, 12,   2, 0, 1, 1,  0], // 12
+    ['Expedition Suit (CL7)',   7, 1, 10,   7, 24,   1, 0, 1, 1,  0], // 13
+    // The following entries are for creatures only.
+    ['Armored Carapace',        0, 1, 10,   0,  0,   0, 0, 3, 3,  0], // 14
+    ['Armored Carapace',        0, 1, 10,   0,  0,   0, 0, 4, 4,  0], // 15
+    ['Armored Carapace',        0, 1, 10,   0,  0,   0, 0, 5, 5,  0], // 16
+    ['Chitinous Carapace',      0, 1, 10,   0,  0,   0, 0, 3, 1,  0], // 17
+    ['Chitinous Carapace',      0, 1, 10,   0,  0,   0, 0, 4, 1,  0], // 18
+    ['Chitinous Carapace',      0, 1, 10,   0,  0,   0, 0, 5, 1,  0], // 19
+    ['Reflective Carapace',     0, 1, 10,   0,  0,   0, 0, 1, 3,  0], // 20
+    ['Reflective Carapace', 	0, 1, 10,   0,  0,   0, 0, 1, 4,  0], // 21
+    ['Reflective Carapace', 	0, 1, 10,   0,  0,   0, 0, 1, 5,  0], // 22
+    ['Reflective Carapace', 	0, 1, 10,   0,  0,   0, 0, 2, 3,  0], // 23
+    ['Reflective Carapace', 	0, 1, 10,   0,  0,   0, 0, 2, 4,  0], // 24
+    ['Reflective Carapace', 	0, 1, 10,   0,  0,   0, 0, 2, 5,  0], // 25
+];
+
+/* 
+   LOGIC FOR UNIVERSE RPG WEAPON ATTACK 
+   
+   Expected Arguments passed to the roll function:
+   - weaponName: String
+   - baseChance: Number (The specific range chance: range_0, range_2, etc.)
+   - hitStrength: Number
+   - modifiers: Number (Can be negative or positive)
+*/
+
+// This handles the "tab" switching.
+const buttonlist = ["sumry", "combat", "heritage", "development", "profession", "skills", "equipment"];
+buttonlist.forEach(button => {
+    on(`clicked:${button}`, function() {
+        setAttrs({
+            sheetTab: button
+        });
+    });
+});
+
+// Environment changes.
+on("clicked:recalc change:globEnvName change:globGravity", function() {
+    getAttrs(["globEnvName","globGravity"], function(values) {
+       	let envName = values.globEnvName;
+	let gravity = parseFloat(values.globGravity);
+	let envDesc = envName + "; gravity " + gravity.toFixed(3) + "g";
+	// console.log("handler: envDesc is '" + envDesc + "'");
+	setAttrs({"curEnvironment":envDesc});
+    });
+});
+
+// Physical stat changes.
+  on("clicked:recalc change:st change:en change:dx change:ay change:combat", function() {
+      getAttrs(["st", "en", "dx", "ay", "combat", "sheetTab"], function(values) {
+	  let st = parseInt(values.st, 10);
+	  let en = parseInt(values.en, 10);
+	  let dx = parseInt(values.dx, 10);
+	  let ay = parseInt(values.ay, 10);
+	  let combat = parseInt(values.combat, 10);
+	  let sheetTab = values.sheetTab;
+	  if (sheetTab === "southernwild") { // creature
+	      console.log("calculating creature initiative");
+	      attrs["init_npc"] = init_cbase * envTV;
+	      attrs["init_creature"] = init_cbase * envTV;
+	  } else {			     // character
+	      console.log("calculating character initiative");
+ 	      //getAttrs([envSkillName], function(values2) {
+	      //});
+	  }   
+	  var attrs = {};
+	  if (sheetTab === "southernwild") { // creature
+	      if (combat <= 0) {
+		  combat = 0;
+		  attrs["combat"] = combat;
+		  if (ay <= 0) {
+		      attrs["status_dead"] = 1;
+		  } else {
+		      attrs["status_unconscious"] = 1;
+		      attrs["status_prone"] = 1; // character falls prone when he passes out
+		  }
+	      } else {
+		  attrs["status_unconscious"] = 0;
+		  attrs["status_dead"] = 0;
+	      }
+	      if (ay <= 0) {
+		  ay = 0;
+		  attrs["ay"] = ay;
+		  attrs["status_immobile"] = 1;
+	      } else {
+		  attrs["status_immobile"] = 0;
+	      }
+	  } else {			     // character
+	      if (en <= 0) {
+		  en = 0;
+		  attrs["en"] = en;
+		  if (st <= 0) {
+		      attrs["status_dead"] = 1;
+		  } else {
+		      attrs["status_unconscious"] = 1;
+		      attrs["status_prone"] = 1; // character falls prone when he passes out
+		  }
+	      } else {
+		  attrs["status_unconscious"] = 0;
+		  attrs["status_dead"] = 0;
+	      }
+	      if (ay <= 0) {
+		  ay = 0;
+		  attrs["ay"] = ay;
+		  attrs["status_immobile"] = 1;
+	      } else {
+		  attrs["status_immobile"] = 0;
+	      }
+	  }
+	  attrs["max_st_dx_ay"] = Math.max(st, dx, ay);
+	  attrs["max_dx_ay"] = Math.max(dx, ay);
+	  setAttrs(attrs);
+      });
+  });
+
+  // Calculate initiative bases.  At the moment this is not being triggered by changes in globEnvSkillName for some reason.
+  on("clicked:recalc change:ld change:battlefield change:globEnvSkillName change:intl change:init_cbase", function() {
+      getAttrs(["ld", "battlefield", "globEnvSkillName", "globEnvTV", "intl", "init_cbase", "sheetTab"], function(values) {
+ 	  let ld = parseInt(values.ld, 10);
+ 	  // console.log("LD = " + ld);
+ 	  let battlefield = parseInt(values.battlefield, 10);
+ 	  // console.log("battlefield = " + battlefield);
+ 	  let envSkillName = values.globEnvSkillName;
+ 	  console.log("envSkillName = " + envSkillName);
+ 	  let envTV = parseInt(values.globEnvTV, 10);
+ 	  console.log("envTV = " + envTV);
+ 	  let intl = parseInt(values.intl, 10);
+ 	  // console.log("IN = " + intl);
+ 	  let init_cbase = parseInt(values.init_cbase, 10);
+	  console.log("init_cbase = " + init_cbase);
+	  let sheetTab = values.sheetTab;
+	  var attrs = {};
+	  if (sheetTab === "southernwild") { // creature
+	      console.log("calculating creature initiative");
+	      attrs["init_npc"] = init_cbase * envTV;
+	      attrs["init_creature"] = init_cbase * envTV;
+	  } else {			     // character
+	      console.log("calculating character initiative");
+ 	      getAttrs([envSkillName], function(values2) {
+		  let envSkill = parseInt(eval("values2." + envSkillName), 10);
+		  console.log("envSkill = " + envSkill);
+		  attrs["init_npc"] = ld + envSkill + 2*battlefield + ld/100.0;
+		  attrs["init_creature"] = Math.max(ld, intl) + envSkill + battlefield + ld/100.0;
+	      });
+	  }
+	  setAttrs(attrs);
+
+      });
+  });
+  
+on("clicked:recalc change:repeating_milskill:skmilname change:repeating_milskill:skmillvl remove:repeating_milskill", function() {
+    getSectionIDs("milskill", function(ids) {
+	var fields = [];
+	var unarmed = 0;
+	var close_defense = 0;
+	var body_armor = 0;
+	var body_eva = 0;
+	var battlefield = 0;
+	ids.forEach(function(id) {
+	    fields.push("repeating_milskill_" + id + "_skmilname");
+	    fields.push("repeating_milskill_" + id + "_skmillvl");
+	});
+	// fields.push("close_defense");
+	fields.push("body_armor");
+	fields.push("body_eva");
+	fields.push("battlefield");
+	fields.push("max_st_dx_ay");
+	fields.push("sheetTab");
+	fields.push("combat");
+	fields.push("ay");
+	getAttrs(fields, function(values) {
+	    var total = 0;
+	    ids.forEach(function(id) {
+		var skill = values["repeating_milskill_" + id + "_skmilname"];
+		var level = parseInt(values["repeating_milskill_" + id + "_skmillvl"]);
+		// console.log(skill + " = " + level);
+		if (skill === "unarmed_combat") {
+		    unarmed = level;
+		}
+		if (skill === "eva") {
+		    body_eva = level;
+		    // console.log("body_eva = " + body_eva);
+		}
+		if (skill === "body_armor") {
+		    body_armor = level;
+		    // console.log("body_armor = " + body_armor);
+		}
+		if (skill === "battlefield") {
+		    battlefield = level;
+		}
+		body_eva = Math.max(body_eva, body_armor);
+		// console.log("body_eva = " + body_eva);
+	    });
+	    var max_st_dx_ay = parseInt(values["max_st_dx_ay"]);
+	    var sheetTab = values.sheetTab;
+	    var attrs = {};
+	    attrs["unarmed_skill"] = unarmed;
+	    var maybe_defense = 0;
+	    if (sheetTab === "southernwild") { // creature
+		console.log("it's a creature");
+		var combat = parseInt(values.combat, 10);
+		var ay = parseInt(values.ay, 10);
+		close_defense = combat * Math.floor(ay/2.0);
+	    } else {
+		if (unarmed > 0) { // unarmed combat skill
+		    maybe_defense = max_st_dx_ay + unarmed * unarmed;
+		} else {		 // no skill in unarmed combat
+		    maybe_defense = Math.ceil(max_st_dx_ay/2);
+		}
+		attrs["unarmed_defense"] = maybe_defense;
+		close_defense = Math.max(close_defense, maybe_defense);
+	    }
+	    console.log("close_defense == " + close_defense);
+	    attrs["close_defense"] = close_defense;
+	    attrs["body_armor"] = body_armor;
+	    attrs["body_eva"] = body_eva;
+	    attrs["battlefield"] = battlefield;
+	    setAttrs(attrs);
+	});
+    });
+});
+
+on("clicked:recalc change:repeating_wpnskill:skwpnname change:repeating_wpnskill:skwpnlvl remove:repeating_wpnskill", function() {
+    getSectionIDs("wpnskill", function(ids) {
+	var fields = [];
+	var lsp_handgun = -1;
+	var blades = -1;
+	ids.forEach(function(id) {
+	    fields.push("repeating_wpnskill_" + id + "_skwpnname");
+	    fields.push("repeating_wpnskill_" + id + "_skwpnlvl");
+	});
+	getAttrs(fields, function(values) {
+	    var total = 0;
+	    ids.forEach(function(id) {
+		var skill = values["repeating_wpnskill_" + id + "_skwpnname"];
+		var level = parseInt(values["repeating_wpnskill_" + id + "_skwpnlvl"]);
+		// console.log(skill + " = " + level);
+		if ((skill === "laser_stun_pistol") || (skill === "handguns")) {
+		    if (lsp_handgun < level) {
+			lsp_handgun = level;
+			// console.log("found " + skill);
+		    }
+		}
+		if (skill === "blades") {
+		    blades = level;
+		}
+	    });
+	    var attrs = {};
+	    attrs["lsp_handgun"] = lsp_handgun;
+	    attrs["blades"] = blades;
+	    setAttrs(attrs);
+	});
+    });
+});
+
+// ==================================================
+
+on("clicked:recalc change:born change:globYear change:globOrdDate sheet:opened", function() {
+    getAttrs(["born","globYear", "globOrdDate"], function(values) {
+	const born = values.born;
+	// console.log("born " + born);
+	const bornArray = born.split("/");
+	let bornYear = parseInt(bornArray[0], 10);
+	let bornOrdDate = parseInt(bornArray[1], 10);
+	// console.log("born " + bornYear + "/" + bornOrdDate);
+	let globYear = parseInt(values.globYear, 10);
+	let globOrdDate = parseInt(values.globOrdDate, 10);
+	// console.log("today is " + globYear + "/" + globOrdDate);
+	var age;
+	if (bornOrdDate > globOrdDate) { // birthday is after today
+	    age = globYear - bornYear - 1;
+	} else {                         // already had a birthday this year
+	    age = globYear - bornYear;
+	}
+	// console.log("age is " + age);
+	setAttrs({
+	    "age": age
+	});
+    });
+});
+	      
+// --*-- Mass/weight computations --*--
+
+// Calculating masses and weights for multiples of weapons
+
+// Ranged...
+on("clicked:recalc change:repeating_rwpn:carried change:repeating_rwpn:mass change:repeating_rwpn:count remove:repeating_rwpn", function() {
+    getSectionIDs("rwpn", function(ids) {
+	var fields = [];
+	ids.forEach(function(id) {
+	    fields.push("repeating_rwpn_" + id + "_carried");
+	    fields.push("repeating_rwpn_" + id + "_mass");
+	    fields.push("repeating_rwpn_" + id + "_count");
+	});
+	getAttrs(fields, function(values) {
+	    var total = 0;
+	    ids.forEach(function(id) {
+		var c = parseFloat(values["repeating_rwpn_" + id + "_carried"]);
+		var m = parseFloat(values["repeating_rwpn_" + id + "_mass"]) || 0;
+		var n = parseFloat(values["repeating_rwpn_" + id + "_count"]) || 1;
+		total = total + (c * m * n);
+	    });
+	    setAttrs({"rwpnmass": total});
+	});
+    });
+});
+
+// ...close combat...
+  on("clicked:recalc change:repeating_ccwpn:carried change:repeating_ccwpn:mass change:repeating_ccwpn:count remove:repeating_ccwpn", function() {
+    getSectionIDs("ccwpn", function(ids) {
+	var fields = [];
+	ids.forEach(function(id) {
+	    fields.push("repeating_ccwpn_" + id + "_carried");
+	    fields.push("repeating_ccwpn_" + id + "_hit");
+	    fields.push("repeating_ccwpn_" + id + "_mass");
+	    fields.push("repeating_ccwpn_" + id + "_count");
+	});
+	fields.push("close_defense");
+	fields.push("unarmed_defense");
+	fields.push("max_dx_ay");
+	fields.push("blades");
+	fields.push("sheetTab")
+	getAttrs(fields, function(values) {
+	    // Skip everything if this is a creature.
+	    if (values.sheetTab != "southernwild") {
+		var total = 0;
+		var blades = parseInt(values["blades"]) || 0;
+		var max_dx_ay = parseInt(values["max_dx_ay"]) || 0;
+		var unarmed_defense = parseInt(values["unarmed_defense"]) || 0;
+		var blade_defense = 0;
+		var any_held = 0;
+		ids.forEach(function(id) {
+		    var c = parseFloat(values["repeating_ccwpn_" + id + "_carried"]);
+		    var h = parseFloat(values["repeating_ccwpn_" + id + "_hit"]) || 0;
+		    var m = parseFloat(values["repeating_ccwpn_" + id + "_mass"]) || 0;
+		    var n = parseFloat(values["repeating_ccwpn_" + id + "_count"]) || 1;
+		    total = total + (c * m * n);
+		    if (c > 0) { // close combat weapon held
+			any_held = 1;
+			// console.log("holding ccwpn, hit == " + h);
+			var maybe_defense = 0;
+			if (blades > 0) { // some Blades skill
+			    maybe_defense = max_dx_ay + h + blades * blades;
+			} else {		// no Blades skill
+			    maybe_defense = h;
+			}
+			blade_defense = Math.max(blade_defense, maybe_defense);
+		    }
+		});
+		var close_defense = parseInt(values["close_defense"]);
+		var attrs = {};
+		if (any_held) { // if any close combat weapon held, use blade defense
+		    attrs["close_defense"] = Math.max(blade_defense, close_defense);
+		} else { // no close combat weapon held
+		    attrs["close_defense"] = unarmed_defense;
+		    console.log("close_defense == " + unarmed_defense);
+		} 
+		attrs["ccwpnmass"] = total;
+		setAttrs(attrs);
+	    }
+	});
+    });
+});
+
+// ...and total.
+on("clicked:recalc change:rwpnmass change:ccwpnmass", function() {
+    getAttrs(["rwpnmass", "ccwpnmass"], function(values) {
+	let rwpnmass = parseFloat(values.rwpnmass);
+	let ccwpnmass = parseFloat(values.ccwpnmass);
+	let wpntotmass = rwpnmass + ccwpnmass;
+	var attrs = {};
+	attrs["wpntotmass"] = wpntotmass;
+	setAttrs(attrs);
+    });
+});
+
+// Calculating masses and weights for multiples of armor.  Also
+// calculate total encumbrance, defense, & other stuff.
+
+on("clicked:recalc change:repeating_armor:worn change:repeating_armor:mass change:repeating_armor:count change:body_armor remove:repeating_armor", function() {
+    getSectionIDs("armor", function(ids) {
+	// Need to update [pb]armor{1..10} when armor changes.
+	var fields = [];
+	ids.forEach(function(id) {
+	    fields.push("repeating_armor_" + id + "_worn");
+	    fields.push("repeating_armor_" + id + "_armor");
+	    fields.push("repeating_armor_" + id + "_mass");
+	    fields.push("repeating_armor_" + id + "_encum");
+	    fields.push("repeating_armor_" + id + "_projdef");
+	    fields.push("repeating_armor_" + id + "_beamdef");
+	    fields.push("repeating_armor_" + id + "_type");
+	    fields.push("repeating_armor_" + id + "_augment");
+	    fields.push("repeating_armor_" + id + "_count");
+	});
+	fields.push("body_armor");
+	getAttrs(fields, function(values) {
+	    var total = 0;
+	    var encum = 0;
+	    var augment = 0;
+	    var body_armor = values.body_armor;
+	    // console.log("2125: body_armor = " + body_armor);
+	    var a_projdef = [];
+	    var a_beamdef = [];
+	    for (let i = 1; i <= 10; i++) {
+		a_projdef[i] = 0;
+		a_beamdef[i] = 0;
+	    }
+	    ids.forEach(function(id) {
+		var type = parseFloat(values["repeating_armor_" + id + "_type"]);
+		var projdef = parseInt(values["repeating_armor_" + id + "_projdef"]);
+		var beamdef = parseInt(values["repeating_armor_" + id + "_beamdef"]);
+		console.log("id " + id + ": projdef " + projdef + ", beamdef " + beamdef);
+		var c = parseFloat(values["repeating_armor_" + id + "_worn"]);
+		var m = parseFloat(values["repeating_armor_" + id + "_mass"]) || 0;
+		var e = parseFloat(values["repeating_armor_" + id + "_encum"]) || 0;
+		// var e = parseFloat(values["repeating_armor_" + id + "_encum"]);
+		var a = parseFloat(values["repeating_armor_" + id + "_augment"]);
+		var n = parseFloat(values["repeating_armor_" + id + "_count"]) || 1;
+		console.log("id " + id + ": projdef " + projdef + ", beamdef " + beamdef + ", encumbrance " + e + ", augment " + a);
+		console.log("c/e/n = " + c + "/" + e + "/" + n);
+		// Total up the projectile defense.
+		console.log("retrieving " + "repeating_armor_" + id + "_armor")
+		var armor = values["repeating_armor_" + id + "_armor"];
+		console.log("armor type: " + armor + " (" + armorTable[armor][0] + ")");
+		var partial_start = armorTable[armor][2];
+		var partial_end = armorTable[armor][3];
+		for (let i = partial_start; i <= partial_end; i++) {
+		    a_projdef[i] = projdef;
+		    // console.log("set projdef " + projdef + " for a_projdef[" + i + "]");
+		    a_beamdef[i] = beamdef;
+		    // console.log("set beamdef " + beamdef + " for a_beamdef[" + i + "]");
+		}
+		// If the character has any body armor skill at all, the mass of augmented armor does not count towards the total.
+		if ((body_armor > 0) && (a > 0)) {
+		    console.log("discounting mass of body armor");
+		    m = 0;
+		}
+		total = total + (c * m * n);
+		encum = encum + (c * e * n);
+		console.log("augment for " + id + ": " + a + " (worn: " + n + ")");
+		augment = augment + (a * n);
+		console.log("augment now: " + augment);
+	    });
+	    var attrs = {};
+	    attrs["armortotmass"] = total;
+	    attrs["encumbrance"] = encum;
+	    attrs["augment"] = augment;
+	    for (let i = 1; i <= 10; i++) {
+		attrs["parmor" + i] = a_projdef[i];
+		attrs["barmor" + i] = a_beamdef[i];
+	    }
+	    setAttrs(attrs);
+	});
+    });
+});
+
+// Calculating masses and weights for multiples of equipment
+
+on("clicked:recalc change:repeating_equipment:carried change:repeating_equipment:mass change:repeating_equipment:count remove:repeating_equipment", function() {
+    getSectionIDs("equipment", function(ids) {
+	var fields = [];
+	ids.forEach(function(id) {
+	    fields.push("repeating_equipment_" + id + "_carried");
+	    fields.push("repeating_equipment_" + id + "_mass");
+	    fields.push("repeating_equipment_" + id + "_count");
+	});
+	getAttrs(fields, function(values) {
+	    var total = 0;
+	    ids.forEach(function(id) {
+		var c = parseInt(values["repeating_equipment_" + id + "_carried"]);
+		var m = parseFloat(values["repeating_equipment_" + id + "_mass"]) || 0;
+		var n = parseFloat(values["repeating_equipment_" + id + "_count"]) || 1;
+		total = total + (c * m * n);
+	    });
+	    setAttrs({"eqtotmass": total});
+	});
+    });
+});
+
+// Calculating total mass and total weight carried
+
+on("clicked:recalc change:eqtotmass change:wpntotmass change:armortotmass change:globGravity", function() {
+    getAttrs(["eqtotmass", "wpntotmass", "armortotmass", "globGravity"], function(values) {
+	let grav = parseFloat(values.globGravity);
+	// console.log("handler: gravity = " + grav + " (" + values.globGravity + ")");
+	let wpnmass = parseFloat(values.wpntotmass);
+	let armormass = parseFloat(values.armortotmass);
+	let eqmass = parseFloat(values.eqtotmass);
+	let totmass = wpnmass + armormass + eqmass;
+	var attrs = {};
+	attrs["alltotmass"] = totmass;
+	attrs["alltotwgt"] = totmass * grav;
+	setAttrs(attrs);
+    });
+});
+
+// Compute the characters current movement allowance, & other stuff.
+on("clicked:recalc change:ay change:st change:globEnvARMM change:globGravARMM change:alltotwgt change:status_prone change:body_eva change:encumbrance change:gravsk_nw change:gravsk_lt change:gravsk_hy change:gravsk_ex", function() {
+    // console.log("handler: recalculating movement allowance");
+    getAttrs(["ay", "st", "globEnvARMM", "globEnvTV", "globGravARMM", "globGravity", "globGravClass", "alltotwgt","status_prone", "body_armor", "body_eva", "encumbrance", "augment", "gravsk_nw", "gravsk_lt", "gravsk_hy", "gravsk_ex"], function(values) {
+	let ay = parseInt(values.ay) || 0;
+	let st = parseInt(values.st) || 0;
+	let envARMM = parseInt(values.globEnvARMM);
+	let envTV = parseInt(values.globEnvTV);
+	let gravARMM = parseInt(values.globGravARMM);
+	let gravity = parseInt(values.globGravity);
+	let gravClass = values.globGravClass;
+	let alltotwgt = parseFloat(values.alltotwgt);
+	let status_movement = "normal movement";
+	let prone = parseInt(values.status_prone) || 0;
+	let body_armor = parseInt(values.body_armor);
+	let body_eva = parseInt(values.body_eva);
+	let encum = parseInt(values.encumbrance);
+	let augment = parseInt(values.augment);
+	let gravsk_nw = parseInt(values.gravsk_nw);
+	let gravsk_lt = parseInt(values.gravsk_lt);
+	let gravsk_hy = parseInt(values.gravsk_hy);
+	let gravsk_ex = parseInt(values.gravsk_ex);
+	let gravSkill = 0;
+	// console.log("gravClass == " + gravClass);
+	switch(gravClass) {
+	case "0":
+	    gravSkill = gravsk_nw;
+	    break;
+	case "1":
+	    gravSkill = gravsk_lt;
+	    break;
+	case "2":
+	    gravSkill = gravsk_hy;
+	    break;
+	case "3":
+	    gravSkill = gravsk_ex;
+	    break;
+        default:
+	    gravSkill = -999;
+	}
+	console.log("gravSkill = " + gravSkill);
+	console.log("handler: envARMM = " + envARMM);
+	// Why is this going haywire?
+        let curmove = ay + envARMM + gravARMM + gravSkill;
+	console.log("curmove = " + curmove);
+	let curmoveday = 50.0/(envTV * gravity);
+	// console.log("curmoveday = " + curmoveday);
+	// console.log("handler: st = " + st + ", alltotwgt = " + alltotwgt);
+	var attrs = {};
+	if (alltotwgt <= st) { // up to ST kg: normal movement
+	    curmove *= 1;
+	    status_movement = "normal movement";
+	} else if (alltotwgt <= 4*st) { // up to 4*ST kg: movement hindered
+	    curmove = 1;
+	    status_movement = "hindered movement";
+	} else if (alltotwgt <= 10*st) { // up to 10*ST kg: movement impossible
+	    curmove = 0;
+	    status_movement = "movement impossible";
+	} else if (alltotwgt > 10*st) { // more than can be carried
+	    let overwgt = alltotwgt - 10*st;
+	    curmove = 0;
+	    status_movement = "character overburdened by " + overwgt + " kg!";
+        }
+	// If the character is wearing armor with an encumbrance > 0, their movement may be impeded (or augmented).
+	console.log("encum = "+ encum);
+	if (encum > 0) {
+	    var baediff = encum - body_eva;
+	    var badiff = encum - body_armor;
+	    // console.log("baediff = " + baediff + " (" + encum + " - " + body_eva + ")");
+	    // console.log("badiff = " + badiff + " (" + encum + " - " + body_armor + ")");
+	    if (baediff > 1) {	// encumbrance > body or EVA skill
+		console.log("movement impeded");
+		curmove = curmove/baediff;
+		curmoveday = curmoveday/baediff;
+	    } else if ((augment > 0) && (body_armor > 0) && (badiff < -1)) { // movement augmented by armor
+		console.log("movement augmented, augment " + augment);
+		curmove = curmove * Math.abs(badiff);
+		curmoveday = curmoveday * Math.abs(badiff);
+	    }
+	}
+        // AY of 0 means movement is impossible, no matter what else
+	// is true.
+        if (ay <= 0) {
+	    curmove = 0;
+	    status_movement = "movement impossible";
+	}
+	if (curmove <= 1 && ay > 0) { // can always move at least one hex
+	    curmove = 1;
+	}
+	// If the character is prone, that overrides everything.
+	if (prone > 0) {
+	    curmove = 0;
+	    status_movement = "character is prone";
+	}
+	attrs["curmove"] = curmove;
+	attrs["curmoveday"] = curmoveday;
+	attrs["status_movement"] = status_movement;
+	setAttrs(attrs);
+    });
+});
+
+
+// If anything changes in military skills, we may need to recompute
+// "unarmed combat" in the "Combat" section.
+on("sheet:opened clicked:recalc change:unarmed_skill", function(eventInfo) {
+    var max_st_dx_ay;
+    getAttrs(["max_st_dx_ay"], function(values) {
+	max_st_dx_ay = parseInt(values.max_st_dx_ay);
+	// console.log("max_st_dx_ay = " + max_st_dx_ay);
+    });
+});
+
+on("change:repeating_ccwpn:weapon", function(eventInfo) {
+    var weaponNum = eventInfo.newValue;
+    // console.log("weaponNum === " + weaponNum);
+    // Retrieve values from closeWeaponTable.
+    var weaponHit = parseInt(closeWeaponTable[weaponNum][0], 10);
+    var weaponSkName = closeWeaponTable[weaponNum][2];
+    var weaponMass = closeWeaponTable[weaponNum][3];
+    // console.log("weaponHit:", weaponHit);
+    // console.log("weaponSkName:", weaponSkName);
+    // console.log("weaponMass:", weaponMass);
+    // Also need max_dx_ay.
+    var max_dx_ay;
+    getAttrs(["max_dx_ay"], function(values) {
+    	max_dx_ay = parseInt(values.max_dx_ay);
+    	// console.log("max_dx_ay = " + max_dx_ay);
+    });
+    
+    if (!weaponSkName || weaponSkName.trim() === "") { return; }
+
+    // console.log("sourceAttribute ==", eventInfo.sourceAttribute);
+    var weaponRowId = eventInfo.sourceAttribute.split("_")[2];
+
+    // Get ALL row IDs from the skill table
+    getSectionIDs("repeating_wpnskill", function(ids) {
+	
+    	if (!ids || ids.length === 0) {
+    	    // console.log("No rows found in repeating_wpnskill");
+    	    return;
+    	}
+	
+    	// Build ALL attribute keys upfront
+    	var attrKeys = [];
+    	var keyMap = {}; // Map attrKey -> rowId for later retrieval
+
+    	ids.forEach(function(rowId) {
+    	    var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+    	    var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+    	    attrKeys.push(nameKey);
+    	    attrKeys.push(lvlKey);
+    	    keyMap[nameKey] = rowId;
+    	    keyMap[lvlKey]  = rowId;
+    	});
+	// Fetch all values in one batch
+	getAttrs(attrKeys, function(values) {
+	    
+	    var matchedLvl = null;
+	    var attrs = {};
+	    
+	    // Iterate through the ids again to find the match
+	    ids.forEach(function(rowId) {
+		var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+		var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+		var skillName = values[nameKey];
+		var skillLvl  = values[lvlKey];
+		// console.log("skill: " + skillName + " == " + skillLvl);
+		if (skillName && skillName.toLowerCase().trim() === weaponSkName.toLowerCase().trim()) {
+		    matchedLvl = skillLvl;
+		}
+	    });
+	    
+	    var wpnBonus = 0;
+	    var thisAttr = "repeating_ccwpn_" + weaponRowId + "_skllevel";
+	    if (matchedLvl !== null && matchedLvl !== undefined) {
+		// console.log("found level:", matchedLvl);
+		if (matchedLvl > 0) { // player is NOT unskilled
+		    wpnBonus = max_dx_ay + (matchedLvl * matchedLvl);
+		    // console.log("weapon bonus:", wpnBonus);
+		} else {	       // player is unskilled (including "familiar")
+		    // console.log("no weapon bonus");
+		}
+	    } else {
+		// console.log("No matching skill found for:", weaponSkName);
+	    }
+	    attrs[thisAttr] = matchedLvl;
+	    var thisHit = "repeating_ccwpn_" + weaponRowId + "_hit";
+	    weaponHit += wpnBonus;
+	    var thisMass = "repeating_ccwpn_" + weaponRowId + "_mass";
+	    attrs[thisHit] = weaponHit;
+	    attrs[thisMass] = weaponMass;
+	    setAttrs(attrs);
+	    // console.log("Updated weapon row " + thisAttr + " with skill level:", matchedLvl);
+	    // console.log("Updated weapon row " + thisHit + " with hit strength:", weaponHit);
+	    // console.log("Updated weapon row " + thisMass + " with mass:", weaponMass);
+	});
+   });
+});
+
+on("change:repeating_rwpn:weapon", function(eventInfo) {
+    var weaponNum = eventInfo.newValue;
+    // Retrieve values from rangedWeaponTable.
+    var weaponRate =   rangedWeaponTable[weaponNum][0];
+    var weaponHit =    rangedWeaponTable[weaponNum][1];
+    var weaponSkName = rangedWeaponTable[weaponNum][4];
+    var weaponRange0 = rangedWeaponTable[weaponNum][5];
+    var weaponRange2 = rangedWeaponTable[weaponNum][6];
+    var weaponRange4 = rangedWeaponTable[weaponNum][7];
+    var weaponRange6 = rangedWeaponTable[weaponNum][8];
+    var weaponRange8 = rangedWeaponTable[weaponNum][9];
+    var weaponMass =   rangedWeaponTable[weaponNum][10];
+    // console.log("weaponSkName:", weaponSkName);
+    // Also need dexterity, strength, and globEnvTV
+    var dx = 0;
+    var st = 0;
+    var envTV = 0.0;
+    getAttrs(["dx", "st", "globEnvTV"], function(values) {
+	dx = parseInt(values.dx);
+	st = parseInt(values.st);
+	envTV = parseFloat(values.globEnvTV);
+	// console.log("dx = " + dx);
+	// console.log("envTV = " + envTV);
+    });
+
+    if (!weaponSkName || weaponSkName.trim() === "") { return; }
+    
+    // console.log("sourceAttribute ==", eventInfo.sourceAttribute);
+    var weaponRowId = eventInfo.sourceAttribute.split("_")[2];
+    
+    // Get ALL row IDs from the skill table
+    getSectionIDs("repeating_wpnskill", function(ids) {
+	
+	if (!ids || ids.length === 0) {
+	    // console.log("No rows found in repeating_wpnskill");
+	    return;
+	}
+	
+	// Build ALL attribute keys upfront
+	var attrKeys = [];
+	var keyMap = {}; // Map attrKey -> rowId for later retrieval
+
+	ids.forEach(function(rowId) {
+	    var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+	    var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+	    attrKeys.push(nameKey);
+	    attrKeys.push(lvlKey);
+	    keyMap[nameKey] = rowId;
+	    keyMap[lvlKey]  = rowId;
+	});
+	var lsp_handgun = -1;
+	getAttrs(["lsp_handgun"], function(values) {
+	    lsp_handgun = parseInt(values.lsp_handgun);
+	    // console.log("2067: lsp_handgun = " + lsp_handgun);
+	});
+	
+	// Fetch all values in one batch
+	getAttrs(attrKeys, function(values) {
+	    
+	    var matchedLvl = null;
+	    var attrs = {};
+	    
+	    // Iterate through the ids again to find the match
+	    ids.forEach(function(rowId) {
+		var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+		var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+		var skillName = values[nameKey];
+		var skillLvl  = values[lvlKey];
+		// console.log("skill: " + skillName + " == " + skillLvl);
+		if (skillName && skillName.toLowerCase().trim() === weaponSkName.toLowerCase().trim()) {
+		    matchedLvl = skillLvl;
+		}
+	    });
+	    
+	    var wpnBonus = 0;
+	    var thisAttr = "repeating_rwpn_" + weaponRowId + "_wpnskllvl";
+	    // console.log("2069: lsp_handgun = " + lsp_handgun);
+	    if (weaponSkName === "lsp_handgun") { // laser/stun pistol OR handgun skill may be used
+		matchedLvl = lsp_handgun;
+		// console.log("using skill lsp_handgun == " + lsp_handgun);
+	    }
+	    if (matchedLvl !== null && matchedLvl !== undefined) {
+		// console.log("found level:", matchedLvl);
+		if (matchedLvl > 0) { // player is NOT unskilled
+		    wpnBonus = dx + (matchedLvl * matchedLvl);
+		    // console.log("weapon bonus:", wpnBonus);
+		} else {	       // player is unskilled (including "familiar")
+		    // console.log("no weapon bonus");
+		}
+	    } else {
+		// console.log("No matching skill found for:", weaponSkName);
+	    }
+	    attrs[thisAttr] = matchedLvl;
+	    var thisHit = "repeating_rwpn_" + weaponRowId + "_hit";
+	    var thisRate = "repeating_rwpn_" + weaponRowId + "_rate";
+	    var thisMass = "repeating_rwpn_" + weaponRowId + "_mass";
+	    attrs[thisHit] = weaponHit;
+	    attrs[thisRate] = weaponRate;
+	    attrs[thisMass] = weaponMass;
+	    var thisRange0 = "repeating_rwpn_" + weaponRowId + "_range_0";
+	    var thisRange2 = "repeating_rwpn_" + weaponRowId + "_range_2";
+	    var thisRange4 = "repeating_rwpn_" + weaponRowId + "_range_4";
+	    var thisRange6 = "repeating_rwpn_" + weaponRowId + "_range_6";
+	    var thisRange8 = "repeating_rwpn_" + weaponRowId + "_range_8";
+	    weaponRange0 += wpnBonus;
+	    weaponRange2 += wpnBonus - 2 * envTV;
+	    weaponRange4 += wpnBonus - 4 * envTV;
+	    weaponRange6 += wpnBonus - 6 * envTV;
+	    weaponRange8 += wpnBonus - 8 * envTV;
+	    if (matchedLvl > 0) { // player is NOT unskilled
+		// Some weapons get a Strength bonus at certain ranges.
+		if (weaponNum == 17) { // short bow, range 5-15 hexes
+		    weaponRange4 += st;
+		} else if (weaponNum == 18) { // long bow, range 14-40 hexes
+		    weaponRange6 += st;
+		    weaponRange8 += st;
+		} else if ((weaponNum >= 20) && (weaponNum <= 23)) { // grenade, range 14-15 hexes
+		    weaponRange6 += st;
+		} else if (weaponNum == 24) { // dagger, range 5-13 hexes
+		    weaponRange4 += st;
+		}
+	    }
+	    if (weaponRange0 < -100) { weaponRange0 = "P"; }
+	    if (weaponRange2 < -100) { weaponRange2 = "P"; }
+	    if (weaponRange4 < -100) { weaponRange4 = "P"; }
+	    if (weaponRange6 < -100) { weaponRange6 = "P"; }
+	    if (weaponRange8 < -100) { weaponRange8 = "P"; }
+	    attrs[thisRange0] = weaponRange0;
+	    attrs[thisRange2] = weaponRange2;
+	    attrs[thisRange4] = weaponRange4;
+	    attrs[thisRange6] = weaponRange6;
+	    attrs[thisRange8] = weaponRange8;
+	    
+	    setAttrs(attrs);
+	    // console.log("Updated weapon row " + thisAttr + " with skill level:", matchedLvl);
+	});
+    });
+});
+
+on("change:repeating_ccwpn:weapon", function(eventInfo) {
+    var weaponNum = eventInfo.newValue;
+    // Retrieve values from closeWeaponTable.
+    var weaponRate =   closeWeaponTable[weaponNum][0];
+    var weaponHit =    closeWeaponTable[weaponNum][1];
+    var weaponSkName = closeWeaponTable[weaponNum][4];
+    var weaponRange0 = closeWeaponTable[weaponNum][5];
+    var weaponRange2 = closeWeaponTable[weaponNum][6];
+    var weaponRange4 = closeWeaponTable[weaponNum][7];
+    var weaponRange6 = closeWeaponTable[weaponNum][8];
+    var weaponRange8 = closeWeaponTable[weaponNum][9];
+    var weaponMass =   closeWeaponTable[weaponNum][10];
+    // console.log("weaponSkName:", weaponSkName);
+    // Also need dexterity and globEnvTV
+    var dx = 0;
+    var envTV = 0.0;
+    getAttrs(["dx", "globEnvTV"], function(values) {
+	dx = parseInt(values.dx);
+	envTV = parseFloat(values.globEnvTV);
+	// console.log("dx = " + dx);
+	// console.log("envTV = " + envTV);
+    });
+
+     if (!weaponSkName || weaponSkName.trim() === "") { return; }
+
+     // console.log("sourceAttribute ==", eventInfo.sourceAttribute);
+     var weaponRowId = eventInfo.sourceAttribute.split("_")[2];
+
+     // Get ALL row IDs from the skill table
+     getSectionIDs("repeating_wpnskill", function(ids) {
+	
+ 	if (!ids || ids.length === 0) {
+ 	    // console.log("No rows found in repeating_wpnskill");
+ 	    return;
+ 	}
+	
+ 	// Build ALL attribute keys upfront
+ 	var attrKeys = [];
+ 	var keyMap = {}; // Map attrKey -> rowId for later retrieval
+
+ 	ids.forEach(function(rowId) {
+ 	    var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+ 	    var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+ 	    attrKeys.push(nameKey);
+ 	    attrKeys.push(lvlKey);
+ 	    keyMap[nameKey] = rowId;
+ 	    keyMap[lvlKey]  = rowId;
+ 	});
+ 	var lsp_handgun = -1;
+ 	getAttrs(["lsp_handgun"], function(values) {
+ 	    lsp_handgun = parseInt(values.lsp_handgun);
+ 	    // console.log("2067: lsp_handgun = " + lsp_handgun);
+ 	});
+	
+ 	// Fetch all values in one batch
+ 	getAttrs(attrKeys, function(values) {
+	    
+ 	    var matchedLvl = null;
+ 	    var attrs = {};
+	    
+ 	    // Iterate through the ids again to find the match
+ 	    ids.forEach(function(rowId) {
+ 		var nameKey = "repeating_wpnskill_" + rowId + "_skwpnname";
+ 		var lvlKey  = "repeating_wpnskill_" + rowId + "_skwpnlvl";
+ 		var skillName = values[nameKey];
+ 		var skillLvl  = values[lvlKey];
+ 		// console.log("skill: " + skillName + " == " + skillLvl);
+ 		if (skillName && skillName.toLowerCase().trim() === weaponSkName.toLowerCase().trim()) {
+ 		    matchedLvl = skillLvl;
+ 		}
+ 	    });
+	    
+ 	    var wpnBonus = 0;
+ 	    var thisAttr = "repeating_ccwpn_" + weaponRowId + "_wpnskllvl";
+ 	    // console.log("2069: lsp_handgun = " + lsp_handgun);
+ 	    if (weaponSkName === "lsp_handgun") { // laser/stun pistol OR handgun skill may be used
+ 		matchedLvl = lsp_handgun;
+ 		// console.log("using skill lsp_handgun == " + lsp_handgun);
+ 	    }
+ 	    if (matchedLvl !== null && matchedLvl !== undefined) {
+ 		// console.log("found level:", matchedLvl);
+ 		if (matchedLvl > 0) { // player is NOT unskilled
+ 		    wpnBonus = dx + (matchedLvl * matchedLvl);
+ 		    // console.log("weapon bonus:", wpnBonus);
+ 		} else {	       // player is unskilled (including "familiar")
+ 		    // console.log("no weapon bonus");
+ 		}
+ 	    } else {
+ 		// console.log("No matching skill found for:", weaponSkName);
+ 	    }
+ 	    attrs[thisAttr] = matchedLvl;
+ 	    var thisHit = "repeating_ccwpn_" + weaponRowId + "_hit";
+ 	    var thisRate = "repeating_ccwpn_" + weaponRowId + "_rate";
+ 	    var thisMass = "repeating_ccwpn_" + weaponRowId + "_mass";
+ 	    attrs[thisHit] = weaponHit;
+ 	    attrs[thisRate] = weaponRate;
+ 	    attrs[thisMass] = weaponMass;
+ 	    var thisRange0 = "repeating_ccwpn_" + weaponRowId + "_range_0";
+ 	    var thisRange2 = "repeating_ccwpn_" + weaponRowId + "_range_2";
+ 	    var thisRange4 = "repeating_ccwpn_" + weaponRowId + "_range_4";
+ 	    var thisRange6 = "repeating_ccwpn_" + weaponRowId + "_range_6";
+ 	    var thisRange8 = "repeating_ccwpn_" + weaponRowId + "_range_8";
+ 	    weaponRange0 += wpnBonus;
+ 	    weaponRange2 += wpnBonus - 2 * envTV;
+ 	    weaponRange4 += wpnBonus - 4 * envTV;
+ 	    weaponRange6 += wpnBonus - 6 * envTV;
+ 	    weaponRange8 += wpnBonus - 8 * envTV;
+ 	    if (weaponRange0 < -100) { weaponRange0 = "P"; }
+ 	    if (weaponRange2 < -100) { weaponRange2 = "P"; }
+ 	    if (weaponRange4 < -100) { weaponRange4 = "P"; }
+ 	    if (weaponRange6 < -100) { weaponRange6 = "P"; }
+ 	    if (weaponRange8 < -100) { weaponRange8 = "P"; }
+ 	    attrs[thisRange0] = weaponRange0;
+ 	    attrs[thisRange2] = weaponRange2;
+ 	    attrs[thisRange4] = weaponRange4;
+ 	    attrs[thisRange6] = weaponRange6;
+ 	    attrs[thisRange8] = weaponRange8;
+	    
+ 	    setAttrs(attrs);
+ 	    // console.log("Updated weapon row " + thisAttr + " with skill level:", matchedLvl);
+ 	});
+     });
+ });
+			       
+on("change:repeating_armor:armor", function(eventInfo) {
+    var armorNum = eventInfo.newValue;
+    // Retrieve values from armorTable.
+    var partialStart = armorTable[armorNum][2];
+    var partialEnd = armorTable[armorNum][3];
+    var mass =    armorTable[armorNum][4];
+    var air =     armorTable[armorNum][5];
+    var encum =   armorTable[armorNum][6];
+    var augment = armorTable[armorNum][7];
+    var proj =    armorTable[armorNum][8];
+    var beam =    armorTable[armorNum][9];
+    var hit =     armorTable[armorNum][10];
+    
+    getAttrs(["st", "body_armor"], function(values) {
+      	var st = parseInt(values.st, 10);
+ 	var body_armor = parseInt(values.body_armor, 10);
+	var full_armor = 0;
+	var partial = 0;
+	// console.log("2690: in getAttrs");
+	// console.log("2691: st = " + st);
+	// console.log("2692: body_armor = " + body_armor);
+	// console.log("full_armor == " + full_armor);
+	if (body_armor > 0) {
+	    // console.log("2694: body_armor == " + body_armor + ", so add " + st + " + " + (body_armor*body_armor));
+ 	    hit += st + (body_armor * body_armor);
+	} else {
+   	    // console.log("2697: body_armor == " + body_armor + ", so hit is max of " + st + " and " + hit);
+ 	    hit = Math.max(hit, st);
+	}
+	if ((partialStart > 0) || (partialEnd < 10)) {
+ 	    partial = 1;
+	}
+	if ((partialStart == 1) && (partialEnd == 10)) {
+	    full_armor = 1;
+	}
+	// console.log("full_armor == " + full_armor);
+	// console.log("2709: sourceAttribute ==", eventInfo.sourceAttribute);
+	var armorRowId = eventInfo.sourceAttribute.split("_")[2];
+	
+	// console.log("2712: body_armor == " + body_armor);
+	
+	// if (body_armor > 0) {
+	// 	// console.log("body_armor == " + body_armor + ", so add " + st + " + " + (body_armor*body_armor));
+	// 	hit += st + (body_armor * body_armor);
+	// } else {
+	// 	// console.log("body_armor == " + body_armor + ", so hit is max of " + st + " and " + hit);
+	// 	hit = Math.max(hit, st);
+	// }
+	
+	var attrs = {};
+	attrs["repeating_armor_" + armorRowId + "_part"] = partial;
+	attrs["repeating_armor_" + armorRowId + "_air"] = air;
+	attrs["repeating_armor_" + armorRowId + "_encum"] = encum;
+	attrs["repeating_armor_" + armorRowId + "_augment"] = augment;
+	attrs["repeating_armor_" + armorRowId + "_projdef"] = proj;
+	attrs["repeating_armor_" + armorRowId + "_beamdef"] = beam;
+	attrs["repeating_armor_" + armorRowId + "_hit"] = hit;
+	attrs["repeating_armor_" + armorRowId + "_mass"] = mass;
+	attrs["full_armor"] = full_armor;
+	setAttrs(attrs);
+	// console.log("2732: Updated armor row " + armorRowId);
+    });
+});
+
+ // Update strike chances for all weapons when either dexterity or environ changes.
+ // (Why is this not firing when environ changes?)
+ on("clicked:recalc change:dx change:globEnvTV", function() {
+     var dx = 0;
+     var envTV = 0.0;
+     getAttrs(["dx", "globEnvTV"], function(values) {
+ 	dx = parseInt(values.dx);
+ 	envTV = parseFloat(values.globEnvTV);
+ 	// console.log("dx = " + dx);
+ 	// console.log("envTV = " + envTV);
+     });
+     getSectionIDs("repeating_rwpn", function(ids) {
+ 	if (!ids.length) return; // no rows in weapons table
+ 	var wpnFields = [];
+ 	ids.forEach(function(id) {
+ 	    wpnFields.push("repeating_rwpn_" + id + "_weapon");
+ 	    wpnFields.push("repeating_rwpn_" + id + "_wpnskllvl");
+ 	});
+ 	getAttrs(wpnFields, function(rv) {
+ 	    var attrs = {};
+ 	    ids.forEach(function(id) {
+ 		var prefix = "repeating_rwpn_" + id + "_";
+ 		var weapon = parseInt(rv[prefix + "weapon"]);
+ 		var skillLevel = parseInt(rv[prefix + "wpnskllvl"]) || -1;
+ 		// console.log("skill level for " + rangedWeaponTable[weapon][4] + " == " + skillLevel);
+ 		// Get range_[0,2,4,6,8] for this weapon.
+ 		var range_0 = rangedWeaponTable[weapon][5];
+ 		var range_2 = rangedWeaponTable[weapon][6];
+ 		var range_4 = rangedWeaponTable[weapon][7];
+ 		var range_6 = rangedWeaponTable[weapon][8];
+ 		var range_8 = rangedWeaponTable[weapon][9];
+ 		var wpnBonus = 0;
+ 		if (skillLevel > 0) { // player is NOT unskilled
+ 		    wpnBonus = dx + (skillLevel * skillLevel);
+ 		    // console.log("weapon bonus:", wpnBonus, "(" + dx + "+" + skillLevel + "**2)");
+ 		} else {	       // player is unskilled (including "familiar")
+ 		    // console.log("no weapon bonus");
+ 		}
+ 		var thisRange0 = "repeating_rwpn_" + id + "_range_0";
+ 		var thisRange2 = "repeating_rwpn_" + id + "_range_2";
+ 		var thisRange4 = "repeating_rwpn_" + id + "_range_4";
+ 		var thisRange6 = "repeating_rwpn_" + id + "_range_6";
+ 		var thisRange8 = "repeating_rwpn_" + id + "_range_8";
+ 		range_0 += wpnBonus;
+ 		range_2 += wpnBonus - 2 * envTV;
+ 		range_4 += wpnBonus - 4 * envTV;
+ 		range_6 += wpnBonus - 6 * envTV;
+ 		range_8 += wpnBonus - 8 * envTV;
+ 		if (range_0 < -100) { range_0 = "P"; }
+ 		if (range_2 < -100) { range_2 = "P"; }
+ 		if (range_4 < -100) { range_4 = "P"; }
+ 		if (range_6 < -100) { range_6 = "P"; }
+ 		if (range_8 < -100) { range_8 = "P"; }
+ 		attrs[thisRange0] = range_0;
+ 		attrs[thisRange2] = range_2;
+ 		attrs[thisRange4] = range_4;
+ 		attrs[thisRange6] = range_6;
+ 		attrs[thisRange8] = range_8;
+ 		setAttrs(attrs);
+ 	    });
+ 	});
+     });
+ });
+
+ // Update the character status.
+ on("clicked:recalc change:status_movement change:status_prone", function() {
+     // console.log("handler: recomputing character status");
+     getAttrs(["status_movement", "status_prone"], function(values) {
+ 	let prone = parseInt(values.status_prone) || 0;
+ 	let movement = values.status_movement;
+ 	let status = "";
+ 	// console.log("handler: prone == " + prone);
+ 	status = movement;
+ 	if (prone > 0) {
+             status = "prone";
+ 	}
+ 	setAttrs({"charStatus":status});
+     });
+ });
+
+ // Recreate the "areas of study" string.
+ on("clicked:recalc change:study_ThS change:study_ThS2 change:study_ApS change:study_ApS2 change:study_Bus change:study_Bus2 change:study_Hum change:study_Hum2 change:study_Min change:study_Min2 change:study_Bod change:study_Bod2 change:study_Mil change:study_Mil2", function() {
+     // console.log("handler: recomputing 'studied' string");
+     getAttrs(["study_ThS", "study_ThS2", "study_ApS", "study_ApS2", "study_Bus", "study_Bus2", "study_Hum", "study_Hum2", "study_Min", "study_Min2", "study_Bod", "study_Bod2", "study_Mil", "study_Mil2"], function(values) {
+ 	let ThS = parseInt(values.study_ThS) || 0;
+ 	let ThS2 = parseInt(values.study_ThS2) || 0;
+ 	let ApS = parseInt(values.study_ApS) || 0;
+ 	let ApS2 = parseInt(values.study_ApS2) || 0;
+ 	let Bus = parseInt(values.study_Bus) || 0;
+ 	let Bus2 = parseInt(values.study_Bus2) || 0;
+ 	let Hum = parseInt(values.study_Hum) || 0;
+ 	let Hum2 = parseInt(values.study_Hum2) || 0;
+ 	let Min = parseInt(values.study_Min) || 0;
+ 	let Min2 = parseInt(values.study_Min2) || 0;
+ 	let Bod = parseInt(values.study_Bod) || 0;
+ 	let Bod2 = parseInt(values.study_Bod2) || 0;
+ 	let Mil = parseInt(values.study_Mil) || 0;
+ 	let Mil2 = parseInt(values.study_Mil2) || 0;
+ 	let fos = "";
+ 	if (ThS > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "theoretical science";
+ 	    if (ThS2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (ApS > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "applied science";
+ 	    if (ApS2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (Bus > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "business";
+ 	    if (Bus2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (Hum > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "humanities";
+ 	    if (Hum2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (Min > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "the mind";
+ 	    if (Min2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (Bod > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "the body";
+ 	    if (Bod2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	if (Mil > 0) {
+ 	    if (fos != "") {
+ 		fos = fos + ", ";
+ 	    }
+ 	    fos = fos + "military";
+ 	    if (Mil2 > 0) {
+ 		fos = fos + " (twice)";
+ 	    }
+ 	}
+ 	setAttrs({"fos": fos});
+     });
+ });
+
+// Turn social standing into a meaningful display string.
+ on("clicked:recalc change:socialStanding", function() {
+     getAttrs(["socialStanding"], function(attrs) {
+ 	let socialStanding = parseInt(attrs.socialStanding);
+ 	let socStandLbl = ["ERROR", "Unfostered orphan", "Oppressed minority", "Poor colonist family", "Family fallen on hard times", "Communal colony", "Lower middle class family", "Skilled tech family", "Local establishment", "Independent trading family", "Family runs planetary corp", "Family dominates planet", "Family dominates star system", "Family influences entire Federation", "Wealthy dilletante"][socialStanding];
+ 	setAttrs({"socStandLbl":socStandLbl});
+     });
+ });
+
+// Turn home temperature into a meaningful display string.
+ on("clicked:recalc change:natTemp", function() {
+     getAttrs(["natTemp"], function(attrs) {
+ 	let natTemp = parseInt(attrs.natTemp);
+ 	let natTemp_disp = ["ERROR", "cold temperatures (CD) (−50°–0°F)", "normal temperatures (NL) (25°–100°F)", "hot temperatures (HO) (125°–175°F)"][natTemp];
+ 	setAttrs({"natTemp_disp":natTemp_disp});
+     });
+ });
+
+</script>
